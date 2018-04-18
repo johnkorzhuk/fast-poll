@@ -41,6 +41,8 @@ class NewPollPage extends Component {
 
   static propTypes = {
     history: PropTypes.object.isRequired,
+    uid: PropTypes.string,
+    signIn: PropTypes.func.isRequired,
   };
 
   state = {
@@ -157,14 +159,27 @@ class NewPollPage extends Component {
   };
 
   handleCreate = () => {
-    const { firebase } = this.context;
-    const { options, title } = this.state;
-    const { history } = this.props;
     const pollId = shortId.generate();
+    const { signIn, uid } = this.props;
 
     this.setState({
       loading: true,
     });
+
+    if (!uid) {
+      // due to our database rules, we can't write unless a uid exists
+      signIn('anonymous').then(() => {
+        this.createPoll(pollId);
+      });
+    } else {
+      this.createPoll(pollId);
+    }
+  };
+
+  createPoll(pollId) {
+    const { firebase } = this.context;
+    const { options, title } = this.state;
+    const { history } = this.props;
 
     firebase.polls
       .doc(pollId)
@@ -187,7 +202,7 @@ class NewPollPage extends Component {
         console.error(error);
         // TODO: notify the user of the error
       });
-  };
+  }
 
   render() {
     const { options, loading, title } = this.state;
