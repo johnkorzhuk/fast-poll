@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { arrayMove } from 'react-sortable-hoc';
 import shortId from 'short-id';
 
-import { updateTitle } from '../store/poll/actions';
+import { updateTitle, createPoll } from '../store/poll/actions';
 import {
   addOption,
   removeOption,
@@ -62,20 +62,12 @@ class NewPollPage extends Component {
     title: PropTypes.string,
     signIn: PropTypes.func.isRequired,
     updateTitle: PropTypes.func.isRequired,
+    createPoll: PropTypes.func.isRequired,
     addOption: PropTypes.func.isRequired,
     removeOption: PropTypes.func.isRequired,
     updateOption: PropTypes.func.isRequired,
     updateOptionOrder: PropTypes.func.isRequired,
   };
-
-  state = {
-    loading: false,
-    // to keep track of what item is being edited
-    editing: null,
-  };
-
-  // to keep track of what item is being edited
-  editing = null;
 
   handleKeydown = e => {
     if (e.which === 27) this.handleToggleEdit(this.editing);
@@ -109,7 +101,7 @@ class NewPollPage extends Component {
 
   handleSortEnd = ({ oldIndex, newIndex }) => {
     const { updateOptionOrder, order } = this.props
-    console.log('old', order)
+
     updateOptionOrder(arrayMove(order, oldIndex, newIndex))
   };
 
@@ -132,10 +124,6 @@ class NewPollPage extends Component {
     const pollId = shortId.generate();
     const { signIn, uid } = this.props;
 
-    this.setState({
-      loading: true,
-    });
-
     if (!uid) {
       // due to our database rules, we can't write unless a uid exists
       signIn('anonymous').then(() => {
@@ -148,35 +136,14 @@ class NewPollPage extends Component {
 
   createPoll(pollId) {
     const { firebase } = this.context;
-    const { options } = this.state;
-    const { history, title } = this.props;
+    const { history, title, options, createPoll } = this.props;
 
-    firebase.polls
-      .doc(pollId)
-      .set({
-        title,
-        id: pollId,
-        options: options.map(({ text, id }) => ({ text, optionId: id })),
-      })
-      .then(() => {
-        this.setState({
-          options: [],
-          loading: false,
-        });
-
-        history.push(`/poll/${pollId}`);
-      })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        // TODO: notify the user of the error
-      });
+    createPoll(firebase, history, { title, options, pollId })
   }
 
   render() {
-    const { loading } = this.state;
     const { title, options } = this.props
-    const disableCreate = !title || options.length < 2 || loading;
+    const disableCreate = !title || options.length < 2
 
     return (
       <div>
@@ -202,12 +169,11 @@ class NewPollPage extends Component {
           <Button
             disabled={disableCreate}
             onClick={!disableCreate && this.handleCreate}>
-            {loading ? 'Creating...' : 'Create'}
+            Create
           </Button>
 
           <CreateButton
-            disabled={loading}
-            onClick={!loading && this.handleAddItem}>
+            onClick={this.handleAddItem}>
             Add
           </CreateButton>
         </ActionContainer>
@@ -228,6 +194,7 @@ export default connect(
   {
     updateTitle,
     addOption,
+    createPoll,
     removeOption,
     updateOption,
     updateOptionOrder,
