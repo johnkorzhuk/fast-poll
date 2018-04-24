@@ -1,38 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux'
 
-const INITIAL_STATE = {
-  uid: '',
-  isAnonymous: null,
-  // // some other properties from the user object that may be useful
-  // email: '',
-  // displayName: '',
-  // photoURL: '',
-};
+import { signIn, signOut, startListeningToAuthChanges } from '../store/auth/actions'
+import { selectAuthedState } from '../store/auth/selectors'
 
 class Auth extends React.Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
+    uid: PropTypes.string,
+    isAnonymous: PropTypes.bool,
+    photoURL: PropTypes.string,
+    isAuthed: PropTypes.bool.isRequired,
+    signIn: PropTypes.func.isRequired,
+    signOut: PropTypes.func.isRequired,
+    startListeningToAuthChanges: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
     firebase: PropTypes.object,
   };
 
-  state = INITIAL_STATE;
-
   componentDidMount() {
     const { auth } = this.context.firebase;
+    const { startListeningToAuthChanges }  = this.props
     // onAuthStateChanged returns an unsubscribe method
-    this.stopAuthListener = auth().onAuthStateChanged(user => {
-      if (user) {
-        // if user exists sign-in!
-        this.signIn(user);
-      } else {
-        // otherwise sign-out!
-        this.signOut();
-      }
-    });
+    this.stopAuthListener = startListeningToAuthChanges(auth)
   }
 
   componentWillUnmount() {
@@ -41,69 +34,32 @@ class Auth extends React.Component {
 
   handleSignIn = provider => {
     const { auth } = this.context.firebase;
+    const { signIn } = this.props
 
-    switch (provider) {
-      // the auth listener will handle the success cases
-      case 'google':
-        return auth()
-          .signInWithPopup(new auth.GoogleAuthProvider())
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error(error);
-            // TODO: notify the user of the error
-            return error;
-          });
-
-      case 'anonymous':
-        return auth()
-          .signInAnonymously()
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.error(error);
-            // TODO: notify the user of the error
-            return error;
-          });
-
-      default:
-        const reason = 'Invalid provider passed to signIn method';
-        // eslint-disable-next-line no-console
-        console.error(reason);
-        return Promise.reject(reason);
-    }
+    signIn(auth, provider)
   };
 
   handleSignOut = () => {
     const { auth } = this.context.firebase;
+    const { signOut } = this.props
 
-    return auth().signOut();
+    return signOut(auth)
   };
 
-  signIn(user) {
-    const { uid, isAnonymous } = user;
-
-    this.setState({
-      uid,
-      isAnonymous,
-    });
-  }
-
-  signOut() {
-    this.setState(INITIAL_STATE);
-  }
-
   render() {
-    // If uid doesn't exist in state, the user is not signed in.
-    // A uid will exist if the user is signed in anonymously.
-    // We'll consider anonymous users as unauthed for this variable.
-    const isAuthed = !!(this.state.uid && !this.state.isAnonymous);
+    const { children, ...props } = this.props
 
-    return this.props.children({
-      ...this.state,
+    return children({
+      ...props,
       signIn: this.handleSignIn,
       signOut: this.handleSignOut,
-      isAuthed,
     });
   }
 }
 
-export default Auth;
+export default connect((state) => {
+  return {
+    ...state.auth,
+    isAuthed: selectAuthedState(state)
+  }
+}, { signIn, signOut, startListeningToAuthChanges })(Auth);

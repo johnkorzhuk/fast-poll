@@ -13,7 +13,12 @@
     "gatsby-plugin-react-helmet": "^2.0.3",
     "gatsby-plugin-styled-components": "^2.0.6",
     "react-helmet": "^5.2.0",
+    "react-redux": "^5.0.7",
     "react-sortable-hoc": "^0.6.8",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "short-id": "^0.1.0-1",
     "styled-components": "^3.1.6"
   },
@@ -24,7 +29,7 @@
   "main": "n/a",
   "scripts": {
     "build": "gatsby build",
-    "develop": "gatsby develop",
+    "dev": "gatsby develop",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint **/*.{js,jsx} --quiet",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -40,6 +45,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.6.1",
-    "prettier": "^1.10.2"
+    "prettier": "^1.10.2",
+    "redux-logger": "^3.0.6"
   }
 }

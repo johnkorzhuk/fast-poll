@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { arrayMove } from 'react-sortable-hoc';
 import shortId from 'short-id';
+
+import { updateTitle } from '../store/poll/actions';
+import {
+  addOption,
+  removeOption,
+  updateOption,
+  updateOptionOrder,
+} from '../store/poll/options/actions';
+import { selectOrderedOptions } from '../store/poll/options/selectors';
 
 import { Button } from '../styledComponents/theme';
 import { Heading2 } from '../styledComponents/typography';
@@ -41,14 +51,27 @@ class NewPollPage extends Component {
 
   static propTypes = {
     history: PropTypes.object.isRequired,
+    options: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      text: PropTypes.string,
+      editing: PropTypes.bool.isRequired,
+      votes: PropTypes.number.isRequired
+    })),
+    order: PropTypes.arrayOf(PropTypes.string).isRequired,
     uid: PropTypes.string,
+    title: PropTypes.string,
     signIn: PropTypes.func.isRequired,
+    updateTitle: PropTypes.func.isRequired,
+    addOption: PropTypes.func.isRequired,
+    removeOption: PropTypes.func.isRequired,
+    updateOption: PropTypes.func.isRequired,
+    updateOptionOrder: PropTypes.func.isRequired,
   };
 
   state = {
-    title: '',
-    options: [],
     loading: false,
+    // to keep track of what item is being edited
+    editing: null,
   };
 
   // to keep track of what item is being edited
@@ -60,102 +83,49 @@ class NewPollPage extends Component {
   };
 
   handleToggleEdit = id => {
-    this.setState(prevState => {
-      const options = prevState.options
-        .filter(({ text }) => text)
-        .map(option => {
-          if (option.id === id) {
-            if (!option.editing) {
-              this.editing = id;
-            } else {
-              this.editing = null;
-            }
+    const { updateOption, options, removeOption } = this.props
+    const option = options.find((opt) => opt.id === id)
 
-            return {
-              ...option,
-              editing: !option.editing,
-            };
-          }
+    updateOption(id, { editing: !option.editing })
 
-          return {
-            ...option,
-            editing: false,
-          };
-        });
-
-      return {
-        ...prevState,
-        options,
-      };
-    });
+    if (!option.text) {
+      removeOption(id)
+    }
   };
 
   handleTitleChange = e => {
+    const { updateTitle } = this.props
     const { value } = e.target;
 
-    this.setState({
-      title: value,
-    });
+    updateTitle(value)
   };
 
   handleTextChange = (e, id) => {
-    const options = this.state.options.map(option => {
-      if (option.id === id) {
-        return {
-          ...option,
-          text: e.target.value,
-        };
-      }
-
-      return option;
-    });
-
-    this.setState({
-      ...this.state,
-      options,
-    });
+    const { updateOption } = this.props
+    const { value } = e.target
+    
+    updateOption(id, { text: value })
   };
 
   handleSortEnd = ({ oldIndex, newIndex }) => {
-    this.setState({
-      ...this.state,
-      options: arrayMove(this.state.options, oldIndex, newIndex),
-    });
+    const { updateOptionOrder, order } = this.props
+    console.log('old', order)
+    updateOptionOrder(arrayMove(order, oldIndex, newIndex))
   };
 
   handleAddItem = () => {
-    // if the user spams add w/o writing any text the items w/o any text get removed
-    const options = this.state.options
-      // filter out any falsy values from the list
-      .filter(Boolean)
-      .filter(({ text }) => !!text.trim())
-      .map(option => ({
-        ...option,
-        editing: false,
-      }));
+    const { addOption } = this.props
     const id = shortId.generate();
+
     this.editing = id;
 
-    this.setState({
-      ...this.state,
-      options: [
-        ...options,
-        {
-          id,
-          text: '',
-          editing: true,
-        },
-      ],
-    });
+    addOption(id)
   };
 
   handleDelete = id => {
-    const options = this.state.options.filter(option => option.id !== id);
+    const { removeOption } = this.props
 
-    this.setState({
-      ...this.state,
-      options,
-    });
+    removeOption(id)
   };
 
   handleCreate = () => {
@@ -178,8 +148,8 @@ class NewPollPage extends Component {
 
   createPoll(pollId) {
     const { firebase } = this.context;
-    const { options, title } = this.state;
-    const { history } = this.props;
+    const { options } = this.state;
+    const { history, title } = this.props;
 
     firebase.polls
       .doc(pollId)
@@ -192,7 +162,6 @@ class NewPollPage extends Component {
         this.setState({
           options: [],
           loading: false,
-          title: '',
         });
 
         history.push(`/poll/${pollId}`);
@@ -205,9 +174,9 @@ class NewPollPage extends Component {
   }
 
   render() {
-    const { options, loading, title } = this.state;
-    const optionsWithText = options.filter(({ text }) => !!text.trim());
-    const disableCreate = !title || optionsWithText.length < 2 || loading;
+    const { loading } = this.state;
+    const { title, options } = this.props
+    const disableCreate = !title || options.length < 2 || loading;
 
     return (
       <div>
@@ -218,6 +187,7 @@ class NewPollPage extends Component {
             id="newPollTitle"
             value={title}
             onChange={this.handleTitleChange}
+            onKeyDown={this.handleKeydown}
           />
         </TitleContainer>
         <NewPoll
@@ -246,4 +216,20 @@ class NewPollPage extends Component {
   }
 }
 
-export default NewPollPage;
+export default connect(
+  state => {
+    return {
+      title: state.poll.data.title,
+      order: state.poll.options.order,
+      options: selectOrderedOptions(state),
+      loading: state.poll.data.loading,
+    };
+  },
+  {
+    updateTitle,
+    addOption,
+    removeOption,
+    updateOption,
+    updateOptionOrder,
+  },
+)(NewPollPage);
