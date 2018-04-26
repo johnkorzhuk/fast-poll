@@ -1,4 +1,10 @@
-import { ADD_OPTION, REMOVE_OPTION, UPDATE_OPTION, UPDATE_OPTION_ORDER } from './actions'
+import {
+  ADD_OPTION,
+  REMOVE_OPTION,
+  UPDATE_OPTION,
+  UPDATE_OPTION_ORDER,
+  RESET_OPTIONS,
+} from './actions';
 
 export const INITIAL_STATE = {
   // [optionId]
@@ -6,7 +12,7 @@ export const INITIAL_STATE = {
   // options is a map with the optionId as the keys and
   // option data including results as the values
   data: {},
-}
+};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -20,19 +26,19 @@ export default (state = INITIAL_STATE, action) => {
             id: action.payload.id,
             text: '',
             editing: true,
-            votes: 0
-          }
-        }
-      }
+            votes: 0,
+          },
+        },
+      };
 
     case REMOVE_OPTION:
-      const { [action.payload.id]: removedOption, ...newOptions } = state.data
+      const { [action.payload.id]: removedOption, ...newOptions } = state.data;
 
       return {
         ...state,
         data: newOptions,
-        order: state.order.filter((id) => id !== action.payload.id)
-      }
+        order: state.order.filter(id => id !== action.payload.id),
+      };
 
     case UPDATE_OPTION:
       return {
@@ -41,18 +47,35 @@ export default (state = INITIAL_STATE, action) => {
           ...state.data,
           [action.payload.id]: {
             ...state.data[action.payload.id],
-            ...action.payload.data
-          }
-        }
-      }
+            ...Object.keys(action.payload.data).reduce((aggr, curr) => {
+              if (curr === 'votes') {
+                // eslint-disable-next-line no-param-reassign
+                aggr.votes =
+                  action.payload.id in state.data &&
+                  'votes' in state.data[action.payload.id]
+                    ? state.data[action.payload.id].votes +
+                      action.payload.data.votes
+                    : action.payload.data.votes;
+              } else {
+                // eslint-disable-next-line no-param-reassign
+                aggr[curr] = action.payload.data[curr];
+              }
+              return aggr;
+            }, {}),
+          },
+        },
+      };
 
     case UPDATE_OPTION_ORDER:
       return {
         ...state,
-        order: [...action.payload.order]
-      }
-  
+        order: [...action.payload.order],
+      };
+
+    case RESET_OPTIONS:
+      return INITIAL_STATE;
+
     default:
-      return state
+      return state;
   }
-}
+};

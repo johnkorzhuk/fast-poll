@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-import { signIn, signOut, startListeningToAuthChanges } from '../store/auth/actions'
-import { selectAuthedState } from '../store/auth/selectors'
+import {
+  signIn,
+  signOut,
+  startListeningToAuthChanges,
+  setAuthLoading,
+} from '../store/auth/actions';
+import { selectAuthedState } from '../store/auth/selectors';
 
 class Auth extends React.Component {
   static propTypes = {
@@ -15,6 +20,7 @@ class Auth extends React.Component {
     signIn: PropTypes.func.isRequired,
     signOut: PropTypes.func.isRequired,
     startListeningToAuthChanges: PropTypes.func.isRequired,
+    setAuthLoading: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -22,32 +28,36 @@ class Auth extends React.Component {
   };
 
   componentDidMount() {
-    const { auth } = this.context.firebase;
-    const { startListeningToAuthChanges }  = this.props
+    const { firebase } = this.context;
+    const { startListeningToAuthChanges, setAuthLoading } = this.props;
+
+    setAuthLoading(true);
     // onAuthStateChanged returns an unsubscribe method
-    this.stopAuthListener = startListeningToAuthChanges(auth)
+    this.stopAuthListener = startListeningToAuthChanges(firebase);
   }
 
   componentWillUnmount() {
-    this.stopAuthListener();
+    if (this.stopAuthListener) {
+      this.stopAuthListener();
+    }
   }
 
   handleSignIn = provider => {
     const { auth } = this.context.firebase;
-    const { signIn } = this.props
+    const { signIn } = this.props;
 
-    signIn(auth, provider)
+    signIn(auth, provider);
   };
 
   handleSignOut = () => {
     const { auth } = this.context.firebase;
-    const { signOut } = this.props
+    const { signOut } = this.props;
 
-    return signOut(auth)
+    return signOut(auth);
   };
 
   render() {
-    const { children, ...props } = this.props
+    const { children, ...props } = this.props;
 
     return children({
       ...props,
@@ -57,9 +67,12 @@ class Auth extends React.Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    ...state.auth,
-    isAuthed: selectAuthedState(state)
-  }
-}, { signIn, signOut, startListeningToAuthChanges })(Auth);
+export default connect(
+  state => {
+    return {
+      ...state.auth,
+      isAuthed: selectAuthedState(state),
+    };
+  },
+  { signIn, signOut, startListeningToAuthChanges, setAuthLoading },
+)(Auth);

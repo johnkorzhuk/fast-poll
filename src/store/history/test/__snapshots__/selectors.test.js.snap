@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`history selectors selectSortedPolls selects sorted polls given a selector 1`] = `
+Array [
+  Object {
+    "date": "2018-04-25T23:03:45.174Z",
+    "id": "1",
+    "title": "created poll 1",
+  },
+  Object {
+    "date": "2018-05-25T23:03:45.174Z",
+    "id": "12",
+    "title": "created poll 2",
+  },
+  Object {
+    "date": "2018-06-25T23:03:45.174Z",
+    "id": "124",
+    "title": "created poll 3",
+  },
+]
+`;

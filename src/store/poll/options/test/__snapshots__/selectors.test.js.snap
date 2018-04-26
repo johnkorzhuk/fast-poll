@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`poll/options selectors selectOrderedOptions selects and sorts options after voted 1`] = `
+Array [
+  Object {
+    "editing": false,
+    "id": "1",
+    "text": "1 poll",
+    "votes": 2,
+  },
+  Object {
+    "editing": false,
+    "id": "2",
+    "text": "2 poll",
+    "votes": 1,
+  },
+  Object {
+    "editing": false,
+    "id": "3",
+    "text": "",
+    "votes": 0,
+  },
+]
+`;
+
+exports[`poll/options selectors selectOrderedOptions selects and sorts options while editing 1`] = `
+Array [
+  Object {
+    "editing": false,
+    "id": "1",
+    "text": "1 poll",
+    "votes": 2,
+  },
+  Object {
+    "editing": false,
+    "id": "2",
+    "text": "2 poll",
+    "votes": 1,
+  },
+  Object {
+    "editing": false,
+    "id": "3",
+    "text": "",
+    "votes": 0,
+  },
+]
+`;

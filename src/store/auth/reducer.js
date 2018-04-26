@@ -1,6 +1,6 @@
-import { SIGN_IN, SIGN_OUT, LOADING } from './actions'
+import { SIGN_IN, SIGN_OUT, LOADING } from './actions';
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   loading: false,
   uid: '',
   isAnonymous: null,
@@ -15,17 +15,17 @@ export default (state = INITIAL_STATE, action) => {
     case SIGN_IN:
       return {
         ...state,
-        ...action.payload
-      }
+        ...action.payload,
+      };
 
     case SIGN_OUT:
-      return INITIAL_STATE
+      return INITIAL_STATE;
 
     case LOADING:
       return {
         ...state,
-        loading: action.payload.isLoading
-      }
+        loading: action.payload.isLoading,
+      };
 
     default:
       return state;

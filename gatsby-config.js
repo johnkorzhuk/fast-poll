@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: 'Polling App',
+    title: 'Fast Poll',
   },
   plugins: [
     'gatsby-plugin-react-helmet',

@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`history utils sortPollsByProperty sorts polls by date 1`] = `
+Array [
+  Object {
+    "date": "2018-04-25T23:03:45.174Z",
+    "id": "1",
+    "order": 1,
+    "title": "created poll 1",
+  },
+  Object {
+    "date": "2018-05-25T23:03:45.174Z",
+    "id": "12",
+    "order": 1,
+    "title": "created poll 2",
+  },
+  Object {
+    "date": "2018-06-25T23:03:45.174Z",
+    "id": "124",
+    "order": 3,
+    "title": "created poll 3",
+  },
+]
+`;
+
+exports[`history utils sortPollsByProperty sorts polls given a property in acsending order 1`] = `
+Array [
+  Object {
+    "date": "2018-04-25T23:03:45.174Z",
+    "id": "1",
+    "order": 1,
+    "title": "created poll 1",
+  },
+  Object {
+    "date": "2018-05-25T23:03:45.174Z",
+    "id": "12",
+    "order": 1,
+    "title": "created poll 2",
+  },
+  Object {
+    "date": "2018-06-25T23:03:45.174Z",
+    "id": "124",
+    "order": 3,
+    "title": "created poll 3",
+  },
+]
+`;
+
+exports[`history utils sortPollsByProperty sorts polls given a property in descending order 1`] = `
+Array [
+  Object {
+    "date": "2018-06-25T23:03:45.174Z",
+    "id": "124",
+    "order": 3,
+    "title": "created poll 3",
+  },
+  Object {
+    "date": "2018-04-25T23:03:45.174Z",
+    "id": "1",
+    "order": 1,
+    "title": "created poll 1",
+  },
+  Object {
+    "date": "2018-05-25T23:03:45.174Z",
+    "id": "12",
+    "order": 1,
+    "title": "created poll 2",
+  },
+]
+`;

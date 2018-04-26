@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`poll/options reducer handles action creator addOptionAction as expected 1`] = `
+Object {
+  "data": Object {
+    "1": Object {
+      "editing": true,
+      "id": "1",
+      "text": "",
+      "votes": 0,
+    },
+  },
+  "order": Array [
+    "1",
+  ],
+}
+`;
+
+exports[`poll/options reducer handles action creator removeOptionAction as expected 1`] = `
+Object {
+  "data": Object {
+    "2": Object {
+      "editing": false,
+      "id": "2",
+      "text": "2 poll",
+      "votes": 0,
+    },
+    "3": Object {
+      "editing": false,
+      "id": "3",
+      "text": "",
+      "votes": 0,
+    },
+  },
+  "order": Array [
+    "2",
+    "3",
+  ],
+}
+`;
+
+exports[`poll/options reducer handles action creator updateOptionAction as expected 1`] = `
+Object {
+  "editing": true,
+  "id": "1",
+  "text": "1 updated",
+  "votes": 2,
+}
+`;
+
+exports[`poll/options reducer handles action creator updateOptionOrderAction as expected 1`] = `
+Array [
+  "3",
+  "2",
+  "1",
+]
+`;

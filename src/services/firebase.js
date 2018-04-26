@@ -20,6 +20,10 @@ class Firebase {
   get polls() {
     return this.store().collection('polls');
   }
+
+  get users() {
+    return this.store().collection('users');
+  }
 }
 
 export default new Firebase();

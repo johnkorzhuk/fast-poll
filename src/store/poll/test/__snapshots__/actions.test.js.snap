@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`poll bound actions resetPoll 1`] = `
+Array [
+  Object {
+    "payload": null,
+    "type": "poll/RESET_POLL",
+  },
+]
+`;
+
+exports[`poll bound actions selectOption 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "selection": "1",
+    },
+    "type": "poll/UPDATE_SELECTION",
+  },
+]
+`;
+
+exports[`poll bound actions setCreatedPoll 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "id": "1",
+    },
+    "type": "poll/SET_CREATED_POLL",
+  },
+]
+`;
+
+exports[`poll bound actions setShowResults 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "showResults": true,
+    },
+    "type": "poll/SET_SHOW_RESULTS",
+  },
+]
+`;
+
+exports[`poll bound actions updateTitle 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "title": "new title",
+    },
+    "type": "poll/UPDATE_TITLE",
+  },
+]
+`;

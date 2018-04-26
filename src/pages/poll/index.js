@@ -4,7 +4,7 @@ import { Route, Redirect } from 'react-router-dom';
 
 import Poll from '../../containers/Poll';
 
-const PollPage = ({ uid, signIn }) => {
+const PollPage = () => {
   return (
     <Route
       render={({ location }) => {
@@ -15,7 +15,7 @@ const PollPage = ({ uid, signIn }) => {
               location={location}
               key={location.key}
               path="/poll/:pollId/"
-              render={props => <Poll {...props} uid={uid} signIn={signIn} />}
+              render={props => <Poll {...props} />}
             />
           </div>
         );

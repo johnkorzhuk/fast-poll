@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`poll/options bound actions addOptionremoves any options with no text when adding a new option 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "data": Object {
+        "editing": false,
+      },
+      "id": "1",
+    },
+    "type": "poll/options/UPDATE_OPTION",
+  },
+  Object {
+    "payload": Object {
+      "data": Object {
+        "editing": false,
+      },
+      "id": "2",
+    },
+    "type": "poll/options/UPDATE_OPTION",
+  },
+  Object {
+    "payload": Object {
+      "id": "3",
+    },
+    "type": "poll/options/REMOVE_OPTION",
+  },
+  Object {
+    "payload": Object {
+      "id": "4",
+    },
+    "type": "poll/options/ADD_OPTION",
+  },
+]
+`;
+
+exports[`poll/options bound actions removeOptionremoves 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "id": "3",
+    },
+    "type": "poll/options/REMOVE_OPTION",
+  },
+]
+`;
+
+exports[`poll/options bound actions resetOptions 1`] = `
+Array [
+  Object {
+    "payload": null,
+    "type": "poll/options/RESET_OPTIONS",
+  },
+]
+`;
+
+exports[`poll/options bound actions updateOption 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "data": Object {
+        "editing": true,
+        "text": "3 updated",
+      },
+      "id": "3",
+    },
+    "type": "poll/options/UPDATE_OPTION",
+  },
+]
+`;
+
+exports[`poll/options bound actions updateOptionOrder 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "order": Array [
+        "3",
+        "2",
+        "1",
+      ],
+    },
+    "type": "poll/options/UPDATE_OPTION_ORDER",
+  },
+]
+`;

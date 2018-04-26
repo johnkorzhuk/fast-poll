@@ -5,14 +5,16 @@ import styled from 'styled-components';
 import { arrayMove } from 'react-sortable-hoc';
 import shortId from 'short-id';
 
-import { updateTitle, createPoll } from '../store/poll/actions';
+import { updateTitle, createPoll, resetPoll } from '../store/poll/actions';
 import {
   addOption,
   removeOption,
   updateOption,
   updateOptionOrder,
+  resetOptions,
 } from '../store/poll/options/actions';
 import { selectOrderedOptions } from '../store/poll/options/selectors';
+import { selectAuthedState } from '../store/auth/selectors';
 
 import { Button } from '../styledComponents/theme';
 import { Heading2 } from '../styledComponents/typography';
@@ -51,12 +53,14 @@ class NewPollPage extends Component {
 
   static propTypes = {
     history: PropTypes.object.isRequired,
-    options: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      text: PropTypes.string,
-      editing: PropTypes.bool.isRequired,
-      votes: PropTypes.number.isRequired
-    })),
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        text: PropTypes.string,
+        editing: PropTypes.bool.isRequired,
+        votes: PropTypes.number.isRequired,
+      }),
+    ),
     order: PropTypes.arrayOf(PropTypes.string).isRequired,
     uid: PropTypes.string,
     title: PropTypes.string,
@@ -64,10 +68,20 @@ class NewPollPage extends Component {
     updateTitle: PropTypes.func.isRequired,
     createPoll: PropTypes.func.isRequired,
     addOption: PropTypes.func.isRequired,
+    resetOptions: PropTypes.func.isRequired,
+    resetPoll: PropTypes.func.isRequired,
     removeOption: PropTypes.func.isRequired,
     updateOption: PropTypes.func.isRequired,
     updateOptionOrder: PropTypes.func.isRequired,
+    isAuthed: PropTypes.bool.isRequired,
   };
+
+  componentWillMount() {
+    const { resetPoll, resetOptions } = this.props;
+
+    resetPoll();
+    resetOptions();
+  }
 
   handleKeydown = e => {
     if (e.which === 27) this.handleToggleEdit(this.editing);
@@ -75,58 +89,59 @@ class NewPollPage extends Component {
   };
 
   handleToggleEdit = id => {
-    const { updateOption, options, removeOption } = this.props
-    const option = options.find((opt) => opt.id === id)
+    const { updateOption, options, removeOption } = this.props;
+    const option = options.find(opt => opt.id === id);
 
-    updateOption(id, { editing: !option.editing })
+    updateOption(id, { editing: !option.editing });
 
     if (!option.text) {
-      removeOption(id)
+      removeOption(id);
     }
   };
 
   handleTitleChange = e => {
-    const { updateTitle } = this.props
+    const { updateTitle } = this.props;
     const { value } = e.target;
 
-    updateTitle(value)
+    updateTitle(value);
   };
 
   handleTextChange = (e, id) => {
-    const { updateOption } = this.props
-    const { value } = e.target
-    
-    updateOption(id, { text: value })
+    const { updateOption } = this.props;
+    const { value } = e.target;
+
+    updateOption(id, { text: value });
   };
 
   handleSortEnd = ({ oldIndex, newIndex }) => {
-    const { updateOptionOrder, order } = this.props
+    const { updateOptionOrder, order } = this.props;
 
-    updateOptionOrder(arrayMove(order, oldIndex, newIndex))
+    updateOptionOrder(arrayMove(order, oldIndex, newIndex).filter(Boolean));
   };
 
   handleAddItem = () => {
-    const { addOption } = this.props
+    const { addOption } = this.props;
     const id = shortId.generate();
 
     this.editing = id;
 
-    addOption(id)
+    addOption(id);
   };
 
   handleDelete = id => {
-    const { removeOption } = this.props
+    const { removeOption } = this.props;
 
-    removeOption(id)
+    removeOption(id);
   };
 
   handleCreate = () => {
+    const { auth } = this.context.firebase;
     const pollId = shortId.generate();
     const { signIn, uid } = this.props;
 
     if (!uid) {
       // due to our database rules, we can't write unless a uid exists
-      signIn('anonymous').then(() => {
+      signIn(auth, 'anonymous').then(() => {
         this.createPoll(pollId);
       });
     } else {
@@ -136,14 +151,14 @@ class NewPollPage extends Component {
 
   createPoll(pollId) {
     const { firebase } = this.context;
-    const { history, title, options, createPoll } = this.props;
+    const { history, title, options, createPoll, isAuthed, uid } = this.props;
 
-    createPoll(firebase, history, { title, options, pollId })
+    createPoll(firebase, history, { title, options, pollId, isAuthed, uid });
   }
 
   render() {
-    const { title, options } = this.props
-    const disableCreate = !title || options.length < 2
+    const { title, options } = this.props;
+    const disableCreate = !title || options.length < 2;
 
     return (
       <div>
@@ -172,10 +187,7 @@ class NewPollPage extends Component {
             Create
           </Button>
 
-          <CreateButton
-            onClick={this.handleAddItem}>
-            Add
-          </CreateButton>
+          <CreateButton onClick={this.handleAddItem}>Add</CreateButton>
         </ActionContainer>
       </div>
     );
@@ -189,6 +201,8 @@ export default connect(
       order: state.poll.options.order,
       options: selectOrderedOptions(state),
       loading: state.poll.data.loading,
+      isAuthed: selectAuthedState(state),
+      uid: state.auth.uid,
     };
   },
   {
@@ -198,5 +212,7 @@ export default connect(
     removeOption,
     updateOption,
     updateOptionOrder,
+    resetOptions,
+    resetPoll,
   },
 )(NewPollPage);

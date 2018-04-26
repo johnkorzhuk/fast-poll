@@ -1,12 +1,21 @@
-import { createSelector } from 'reselect'
+import { createSelector } from 'reselect';
 
-export const selectOptionsOrder = (state) => state.poll.options.order
-export const selectOptions = (state) => state.poll.options.data
+import { selectShowResults } from '../selectors';
 
-export const selectOrderedOptions = createSelector([
-  selectOptionsOrder,selectOptions
-], (order, options) => {
-  return order.map((id) => {
-    return options[id]
-  })
-})
+export const selectOptionsOrder = state => state.poll.options.order;
+export const selectOptions = state => state.poll.options.data;
+
+export const selectOrderedOptions = createSelector(
+  [selectOptionsOrder, selectOptions, selectShowResults],
+  (order, options, showResults) => {
+    if (showResults) {
+      return Object.values(options).sort((a, b) => b.votes - a.votes);
+    }
+
+    return order.map(id => options[id]);
+  },
+);
+
+export const selectTotalVotes = createSelector([selectOptions], options => {
+  return Object.values(options).reduce((aggr, curr) => aggr + curr.votes, 0);
+});

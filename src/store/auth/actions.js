@@ -1,6 +1,6 @@
-export const SIGN_IN = 'auth/SIGN_IN'
-export const SIGN_OUT = 'auth/SIGN_OUT'
-export const LOADING = 'auth/LOADING'
+export const SIGN_IN = 'auth/SIGN_IN';
+export const SIGN_OUT = 'auth/SIGN_OUT';
+export const LOADING = 'auth/LOADING';
 
 export const signInAction = ({ uid, isAnonymous, photoURL }) => ({
   type: SIGN_IN,
@@ -8,30 +8,34 @@ export const signInAction = ({ uid, isAnonymous, photoURL }) => ({
     uid,
     isAnonymous,
     photoURL,
-  }
-})
+  },
+});
 
 export const signOutAction = () => ({
   type: SIGN_OUT,
-  payload: null
-})
+  payload: null,
+});
 
-export const loadingAction = (isLoading) => ({
+export const loadingAction = isLoading => ({
   type: LOADING,
   payload: {
-    isLoading
-  }
-})
+    isLoading,
+  },
+});
 
-export const signIn = (auth, provider) => (dispatch) => {
-  dispatch(loadingAction(true))
+export const setAuthLoading = isLoading => dispatch => {
+  dispatch(loadingAction(isLoading));
+};
+
+export const signIn = (auth, provider) => dispatch => {
+  dispatch(loadingAction(true));
   switch (provider) {
     // the auth listener will handle the success cases
     case 'google':
       return auth()
         .signInWithPopup(new auth.GoogleAuthProvider())
         .then(() => {
-          dispatch(loadingAction(false))
+          dispatch(loadingAction(false));
         })
         .catch(error => {
           // eslint-disable-next-line no-console
@@ -44,7 +48,7 @@ export const signIn = (auth, provider) => (dispatch) => {
       return auth()
         .signInAnonymously()
         .then(() => {
-          dispatch(loadingAction(false))
+          dispatch(loadingAction(false));
         })
         .catch(error => {
           // eslint-disable-next-line no-console
@@ -59,22 +63,26 @@ export const signIn = (auth, provider) => (dispatch) => {
       console.error(reason);
       return Promise.reject(reason);
   }
-}
+};
 
-export const signOut = (auth) => (dispatch) => {
-  return auth().signOut().then(() => {
-    dispatch(signOutAction())
-  })
-}
+export const signOut = auth => dispatch => {
+  return auth()
+    .signOut()
+    .then(() => {
+      dispatch(signOutAction());
+    });
+};
 
-export const startListeningToAuthChanges = (auth) => (dispatch) => {
-  return auth().onAuthStateChanged(user => {
+export const startListeningToAuthChanges = firebase => dispatch => {
+  return firebase.auth().onAuthStateChanged(user => {
     if (user) {
       // if user exists sign-in!
-      dispatch(signInAction(user))
+      dispatch(signInAction(user));
+      dispatch(loadingAction(false));
     } else {
       // otherwise sign-out!
-      dispatch(signOutAction())
+      dispatch(signOutAction());
+      dispatch(loadingAction(false));
     }
   });
-}
+};

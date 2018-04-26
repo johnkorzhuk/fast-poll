@@ -31,14 +31,14 @@ const OptionResult = styled.div`
 // components.
 const Option = styled(
   ({
-    hasVoted,
+    showResults,
     // destructure these next two props so that react
     // doesn't complain about unsupported html tag attributes
     // https://reactjs.org/warnings/unknown-prop.html
     selected,
     optionIsSelected,
     ...props
-  }) => (hasVoted ? <div {...props} /> : <button {...props} />),
+  }) => (showResults ? <div {...props} /> : <button {...props} />),
 )`
   display: flex;
   align-items: center;
@@ -52,14 +52,14 @@ const Option = styled(
       selected ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.2)'};
   transition: transform 150ms linear, box-shadow 150ms linear,
     color 150ms linear;
-  cursor: ${({ hasVoted }) => (hasVoted ? 'default' : 'pointer')};
+  cursor: ${({ showResults }) => (showResults ? 'default' : 'pointer')};
   color: ${({ selected, optionIsSelected }) =>
     selected
       ? 'rgba(0, 0, 0, 0.8)'
       : optionIsSelected ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.6)'};
 
-  ${({ hasVoted }) =>
-    hasVoted
+  ${({ showResults }) =>
+    showResults
       ? css`
           &:hover,
           &:focus {
@@ -83,6 +83,12 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
   width: 100%;
   min-height: 36px;
+
+  > button {
+    &:first-child {
+      margin-right: 20px;
+    }
+  }
 `;
 
 const Poll = ({
@@ -90,45 +96,53 @@ const Poll = ({
   options,
   title,
   selection,
-  hasVoted,
+  showResults,
   onSelectOption,
   onVote,
+  onShowResults,
+  created,
+  isOwner,
+  totalVotes,
 }) => {
-  let optionsArray = Object.values(options);
-  const renderOptions = !loading && optionsArray.length > 0;
-  const renderVoteButton = renderOptions && !hasVoted;
+  const renderOptions = created || (!loading && options.length > 0);
+  const renderVoteButton = renderOptions && !showResults;
+  const renderShowResultsButton = renderVoteButton && !showResults && isOwner;
   const voteIsDisabled = loading || !selection;
-  const totalVotes = optionsArray.reduce((aggr, curr) => aggr + curr.votes, 0);
-
-  if (hasVoted) {
-    optionsArray = optionsArray.sort((a, b) => b.votes - a.votes);
-  }
 
   return (
     <Container>
-      <Heading2>{loading || !title ? 'loading...' : title}</Heading2>
+      <Heading2>{title || 'loading...'}</Heading2>
       <div>
         {renderOptions &&
-          optionsArray.map(option => {
-            const id = option.optionId;
+          options.map(option => {
+            const { id } = option;
             const selected = id === selection;
-            const perc = (option.votes / totalVotes * 100).toFixed(2) || 0;
+            let perc = totalVotes
+              ? (option.votes / totalVotes * 100).toFixed(2)
+              : 0;
+
+            if (perc.toString().split('.')[1] === '00') {
+              perc = Number.parseInt(perc, 10);
+            }
 
             return (
               <Option
                 key={id}
                 selected={selected}
-                hasVoted={hasVoted}
+                showResults={showResults}
                 optionIsSelected={!!selection}
-                onClick={() => !hasVoted && onSelectOption(id)}>
+                onClick={() => !showResults && onSelectOption(id)}>
                 <OptionText>{option.text}</OptionText>
-                {hasVoted &&
-                  !isNaN(perc) && <OptionResult>{perc}%</OptionResult>}
+                {showResults &&
+                  !Number.isNaN(perc) && <OptionResult>{perc}%</OptionResult>}
               </Option>
             );
           })}
       </div>
       <ButtonContainer>
+        {renderShowResultsButton && (
+          <Button onClick={onShowResults}>See Results</Button>
+        )}
         {renderVoteButton && (
           <Button disabled={voteIsDisabled} onClick={!voteIsDisabled && onVote}>
             Vote
@@ -141,12 +155,23 @@ const Poll = ({
 
 Poll.propTypes = {
   loading: PropTypes.bool.isRequired,
-  options: PropTypes.object.isRequired,
+  isOwner: PropTypes.bool.isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      text: PropTypes.string,
+      editing: PropTypes.bool.isRequired,
+      votes: PropTypes.number.isRequired,
+    }),
+  ),
   title: PropTypes.string.isRequired,
+  totalVotes: PropTypes.number,
   selection: PropTypes.string.isRequired,
-  hasVoted: PropTypes.bool.isRequired,
+  showResults: PropTypes.bool.isRequired,
+  created: PropTypes.bool.isRequired,
   onSelectOption: PropTypes.func.isRequired,
   onVote: PropTypes.func.isRequired,
+  onShowResults: PropTypes.func.isRequired,
 };
 
 export default Poll;

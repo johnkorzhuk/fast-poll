@@ -1,5 +1,22 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import { signIn } from '../store/auth/actions';
+import {
+  getInitialPollData,
+  checkIfUserHasVoted,
+  startListeningToResultChanges,
+  selectOption,
+  voteOnPoll,
+  setShowResults,
+} from '../store/poll/actions';
+import { selectIsOwner } from '../store/poll/selectors';
+import {
+  selectOrderedOptions,
+  selectTotalVotes,
+} from '../store/poll/options/selectors';
+import { selectAuthedState } from '../store/auth/selectors';
 
 import Poll from '../components/Poll/index';
 
@@ -12,60 +29,42 @@ class PollContainer extends Component {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     uid: PropTypes.string,
+    selection: PropTypes.string,
+    title: PropTypes.string,
     signIn: PropTypes.func.isRequired,
-  };
-
-  state = {
-    title: '',
-    // options is a map with the optionId as the keys and
-    // option data including results as the values
-    options: {},
-    loading: false,
-    selection: '',
-    hasVoted: false,
+    getInitialPollData: PropTypes.func.isRequired,
+    checkIfUserHasVoted: PropTypes.func.isRequired,
+    setShowResults: PropTypes.func.isRequired,
+    startListeningToResultChanges: PropTypes.func.isRequired,
+    voteOnPoll: PropTypes.func.isRequired,
+    selectOption: PropTypes.func.isRequired,
+    authLoading: PropTypes.bool.isRequired,
+    isAuthed: PropTypes.bool.isRequired,
+    created: PropTypes.bool.isRequired,
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        text: PropTypes.string,
+        editing: PropTypes.bool.isRequired,
+        votes: PropTypes.number.isRequired,
+      }),
+    ),
   };
 
   // pull the pollId from the route param, then fetch the poll
   componentDidMount() {
-    const { history, match, uid } = this.props;
+    const { firebase } = this.context;
+    const { history, match, getInitialPollData, created, uid } = this.props;
 
     if (match.params.pollId.length === 6) {
-      if (uid) {
-        this.checkVote(uid);
-      }
-
-      this.setState({
-        loading: true,
+      getInitialPollData(firebase, history, {
+        pollId: match.params.pollId,
+        created,
       });
 
-      this.poll
-        .get()
-        .then(doc => {
-          if (doc.exists) {
-            const { title, options } = doc.data();
-
-            this.setState({
-              loading: false,
-              title,
-              options: options.reduce((aggr, curr) => {
-                return {
-                  ...aggr,
-                  [curr.optionId]: {
-                    ...curr,
-                    votes: 0,
-                  },
-                };
-              }, {}),
-            });
-          } else {
-            history.push('/404');
-          }
-        })
-        .catch(error => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-          // TODO: notify the user of the error
-        });
+      if (uid) {
+        this.checkVote(uid)
+      }
     } else {
       history.push('/404');
     }
@@ -74,12 +73,13 @@ class PollContainer extends Component {
   // since we don't know when the user will be authenticated if ever,
   // we need to add checks here and sign in anonymously if not
   componentWillReceiveProps(nextProps) {
-    const { uid } = this.props;
-    const { uid: nextUid } = nextProps;
-
+    const { uid, authLoading } = this.props;
+    const { uid: nextUid, authLoading: nextAuthLoading } = nextProps;
     if ((!uid && !nextUid) || (uid && !nextUid)) {
-      this.signInAnonymously();
-    } else {
+      if (!authLoading && !nextAuthLoading) {
+        this.signInAnonymously();
+      }
+    } else if (uid !== nextUid) {
       // a uid exists, check if the user has already voted
       this.checkVote(nextUid);
     }
@@ -91,135 +91,87 @@ class PollContainer extends Component {
     }
   }
 
-  get poll() {
-    const { firebase } = this.context;
-    const { match } = this.props;
+  handleShowResults = () => {
+    const { setShowResults, selection, selectOption } = this.props;
 
-    return firebase.polls.doc(match.params.pollId);
-  }
+    if (selection) {
+      selectOption('');
+    }
 
-  get results() {
-    // get the results sub-collection on the poll document
-    return this.poll.collection('results');
-  }
+    setShowResults(true);
+    this.startResultListener();
+  };
 
   handleSelectOption = id => {
-    this.setState({
-      selection: id,
-    });
+    const { selectOption } = this.props;
+
+    selectOption(id);
   };
 
   handleVote = () => {
     const { uid } = this.props;
-    const { selection } = this.state;
-    const vote = uid => {
-      this.setState({
-        loading: true,
-      });
-
-      // store the users vote in a sub-collection
-      this.results
-        .doc(uid)
-        .set({
-          optionId: selection,
-          uid,
-        })
-        .then(() => {
-          this.setState({
-            loading: false,
-            hasVoted: true,
-          });
-
-          this.startResultListener();
-        });
-    };
     // in the case a user votes and they've not been logged in
     if (!uid) {
       this.signInAnonymously().then(({ uid }) => {
-        vote(uid);
+        this.vote(uid);
       });
     } else {
-      vote(uid);
+      this.vote(uid);
     }
   };
 
-  signInAnonymously() {
-    const { signIn } = this.props;
+  vote(uid) {
+    const { firebase } = this.context;
+    const { voteOnPoll, selection, match, isAuthed, title } = this.props;
+    const { pollId } = match.params;
 
-    return signIn('anonymous').catch(error => {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      // TODO: notify the user of the error
+    return voteOnPoll(firebase, {
+      uid,
+      pollId,
+      selection,
+      isAuthed,
+      title,
+    }).then(() => {
+      this.startResultListener();
     });
   }
 
+  signInAnonymously() {
+    const { auth } = this.context.firebase;
+    const { signIn } = this.props;
+
+    return signIn(auth, 'anonymous');
+  }
+
   checkVote(uid) {
-    this.results
-      .doc(uid)
-      .get()
-      .then(resultDoc => {
-        if (resultDoc.exists) {
-          const { optionId } = resultDoc.data();
+    const { firebase } = this.context;
+    const { match, checkIfUserHasVoted } = this.props;
+    const { pollId } = match.params;
 
-          this.setState({
-            selection: optionId,
-            hasVoted: true,
-          });
-
-          // start listening to result changes since there
-          // user has voted.
-          this.startResultListener();
-        }
-      })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        // TODO: notify the user of the error
-      });
+    return checkIfUserHasVoted(firebase, { uid, pollId }).then(optionId => {
+      if (optionId) {
+        this.startResultListener();
+      }
+    });
   }
 
   startResultListener() {
-    // set an unsubscribe reference on the instance, so that
-    // we can stop listening when the component unmounts
-    this.stopResultListener = this.results.onSnapshot(
-      snapshot => {
-        snapshot.docChanges.forEach(change => {
-          const { optionId } = change.doc.data();
+    const { firebase } = this.context;
+    const { match, startListeningToResultChanges } = this.props;
+    const { pollId } = match.params;
 
-          if (change.type === 'added') {
-            this.setState(prevState => {
-              return {
-                ...prevState,
-                options: {
-                  ...prevState.options,
-                  [optionId]: {
-                    ...prevState.options[optionId],
-                    votes: prevState.options[optionId].votes + 1,
-                  },
-                },
-              };
-            });
-          }
-          if (change.type === 'removed') {
-            // currently there's no way of changing a user's vote after it
-            // has been saved. We could accomplish this by deleting the
-            // user's uid document on the results sub-collection. This
-            // is where we'd remove the vote from the UI when that'd happen.
-          }
-        });
-      },
-      error => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        // TODO: notify the user of the error
-      },
-    );
+    if (!this.stopResultListener) {
+      this.stopResultListener = startListeningToResultChanges(firebase, {
+        pollId,
+      });
+    }
   }
 
   render() {
     return (
       <Poll
-        {...this.state}
+        {...this.props}
+        onShowResults={this.handleShowResults}
         onSelectOption={this.handleSelectOption}
         onVote={this.handleVote}
       />
@@ -227,4 +179,26 @@ class PollContainer extends Component {
   }
 }
 
-export default PollContainer;
+export default connect(
+  (state, { match }) => {
+    return {
+      ...state.poll.data,
+      uid: state.auth.uid,
+      authLoading: state.auth.loading,
+      options: selectOrderedOptions(state),
+      created: state.poll.data.created === match.params.pollId,
+      isOwner: selectIsOwner(state),
+      totalVotes: selectTotalVotes(state),
+      isAuthed: selectAuthedState(state),
+    };
+  },
+  {
+    signIn,
+    getInitialPollData,
+    checkIfUserHasVoted,
+    startListeningToResultChanges,
+    selectOption,
+    voteOnPoll,
+    setShowResults,
+  },
+)(PollContainer);
