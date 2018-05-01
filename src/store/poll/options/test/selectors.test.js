@@ -45,6 +45,4 @@ describe('poll/options selectors', () => {
       expect(selectors.selectOrderedOptions(getState(true))).toMatchSnapshot()
     })
   })
-
-
 })

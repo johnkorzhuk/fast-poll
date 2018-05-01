@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`poll bound actions toggleHeaderNav 1`] = `
+Array [
+  Object {
+    "payload": Object {
+      "isOpen": true,
+    },
+    "type": "ui/TOGGLE_HEADER_NAV",
+  },
+]
+`;
