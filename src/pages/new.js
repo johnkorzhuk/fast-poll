@@ -125,7 +125,6 @@ class NewPollPage extends Component {
     const id = shortId.generate();
 
     this.editing = id;
-
     addOption(id);
   };
 
@@ -136,13 +135,12 @@ class NewPollPage extends Component {
   };
 
   handleCreate = () => {
-    const { auth } = this.context.firebase;
     const { signIn, uid } = this.props;
     const pollId = shortId.generate();
 
     if (!uid) {
       // due to our database rules, we can't write unless a uid exists
-      signIn(auth, 'anonymous').then(() => {
+      signIn('anonymous').then(() => {
         this.createPoll(pollId);
       });
     } else {

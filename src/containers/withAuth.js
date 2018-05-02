@@ -50,7 +50,7 @@ const withAuth = (listenForAuthChanges = false) => WrappedComponent => {
       const { firebase } = this.context;
       const { signIn } = this.props;
 
-      signIn(firebase, provider);
+      return signIn(firebase, provider);
     };
 
     handleSignOut = () => {

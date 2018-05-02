@@ -74,11 +74,11 @@ class PollContainer extends Component {
   // since we don't know when the user will be authenticated if ever,
   // we need to add checks here and sign in anonymously if not
   componentWillReceiveProps(nextProps) {
-    const { uid, authLoading } = this.props;
+    const { uid, authLoading, signIn } = this.props;
     const { uid: nextUid, authLoading: nextAuthLoading } = nextProps;
     if ((!uid && !nextUid) || (uid && !nextUid)) {
       if (!authLoading && !nextAuthLoading) {
-        this.signInAnonymously();
+        signIn('anonymous');
       }
     } else if (uid !== nextUid) {
       // a uid exists, check if the user has already voted
@@ -110,10 +110,10 @@ class PollContainer extends Component {
   };
 
   handleVote = () => {
-    const { uid } = this.props;
+    const { uid, signIn } = this.props;
     // in the case a user votes and they've not been logged in
     if (!uid) {
-      this.signInAnonymously().then(({ uid }) => {
+      signIn('anonymous').then(({ uid }) => {
         this.vote(uid);
       });
     } else {
@@ -135,13 +135,6 @@ class PollContainer extends Component {
     }).then(() => {
       this.startResultListener();
     });
-  }
-
-  signInAnonymously() {
-    const { auth } = this.context.firebase;
-    const { signIn } = this.props;
-
-    return signIn(auth, 'anonymous');
   }
 
   checkVote(uid) {
