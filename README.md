@@ -31,7 +31,7 @@ You can find the other scripts in the [package.json](./package.json).
 
 # Known issues and bugs
 
-If you know why or how to fix any of these, please create an issue letting me know.
+If you know why or how to fix any of these issues, please let me know how I can go about that or create a pull request. Thanks.
 - I'm unable to use async-await in src/ directory. During the `Building static HTML for pages` process when I build the application for production an error is thrown. See [issue #1](https://github.com/johnkorzhuk/fast-poll/issues/1).
 - All pages depend on firebase.js since my provider is wrapping the application in [gatsby-browser.js](./gatsby-browser.js). Directly importing it in the ./src directory throws a webpack error. See [issue #2](https://github.com/johnkorzhuk/fast-poll/issues/2).
 
