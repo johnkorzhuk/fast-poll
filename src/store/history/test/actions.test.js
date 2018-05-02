@@ -9,7 +9,5 @@
 
 xdescribe('history async bound actions', () => {
   // TODO: figure out how to mock firebase
-  xit('test', () => {
-    
-  })
-})
+  xit('test', () => {});
+});

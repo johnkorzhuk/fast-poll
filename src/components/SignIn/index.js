@@ -6,7 +6,7 @@ const Container = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 5px 10px;
+  padding: 5px 15px;
   color: rgba(0, 0, 0, 0.54);
   border: none;
   font-family: Roboto, sans-serif;
@@ -14,6 +14,11 @@ const Container = styled.button`
   background-color: white;
   cursor: pointer;
   transition: color 200ms linear;
+  border-radius: 17px;
+
+  > span {
+    margin: 0 5px;
+  }
 
   &:hover {
     color: rgba(0, 0, 0, 0.8);

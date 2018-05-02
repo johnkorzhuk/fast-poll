@@ -1,17 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
 const Container = styled.nav`
   min-width: 150px;
-  border-radius: 15px;
+  border-radius: 10px;
   box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.2);
   position: absolute;
   right: 0;
   top: 50px;
   z-index: 10;
   background-color: white;
-`
+`;
 
 export const NavItem = styled.div`
   padding: 10px 20px;
@@ -21,7 +21,7 @@ export const NavItem = styled.div`
   cursor: pointer;
   position: relative;
   transition: background-color 200ms linear;
-  font-size: 16px;
+  font-size: 14px;
   text-decoration: none !important;
   border-radius: 0;
 
@@ -43,23 +43,19 @@ export const NavItem = styled.div`
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-`
+`;
 
-const Nav = ({
-  isOpen,
-  children
-}) => {
-
+const Nav = ({ isOpen, children }) => {
   return (
     <Container aria-haspopup="true" aria-expanded={isOpen}>
       {children}
     </Container>
-  )
-}
+  );
+};
 
 Nav.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  children: PropTypes.arrayOf(PropTypes.element.isRequired)
-}
+  children: PropTypes.arrayOf(PropTypes.element.isRequired),
+};
 
-export default Nav
+export default Nav;

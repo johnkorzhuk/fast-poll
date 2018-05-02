@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-import { Heading2 } from '../../styledComponents/typography';
-import { Button } from '../../styledComponents/theme';
+import { Heading2 } from '../styled/typography';
+import { Button } from '../styled/theme';
 
 const Container = styled.section`
   margin-top: 50px;

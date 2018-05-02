@@ -1,3 +1,5 @@
+const isProd = process.env.NODE_ENV === 'production'
+
 module.exports = {
   siteMetadata: {
     title: 'Fast Poll',
@@ -31,6 +33,6 @@ module.exports = {
         ],
       },
     },
-    'gatsby-plugin-offline',
-  ],
+    isProd ? 'gatsby-plugin-offline' : null,
+  ].filter(Boolean),
 };

@@ -1,23 +1,18 @@
-import { TOGGLE_HEADER_NAV } from './actions'
+import { TOGGLE_OVERLAY } from './actions';
 
 export const INITIAL_STATE = {
-  headerNav: {
-    isOpen: false
-  }
-}
+  overlay: false,
+};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case TOGGLE_HEADER_NAV:
+    case TOGGLE_OVERLAY:
       return {
         ...state,
-        headerNav: {
-          ...state.headerNav,
-          isOpen: action.payload.isOpen
-        }
-      }
-  
+        overlay: action.payload.isOpen,
+      };
+
     default:
-      return state
+      return state;
   }
-}
+};

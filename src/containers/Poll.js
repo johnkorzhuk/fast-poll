@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
-import { signIn } from '../store/auth/actions';
 import {
   getInitialPollData,
   checkIfUserHasVoted,
@@ -16,8 +17,8 @@ import {
   selectOrderedOptions,
   selectTotalVotes,
 } from '../store/poll/options/selectors';
-import { selectAuthedState } from '../store/auth/selectors';
 
+import withAuth from './withAuth';
 import Poll from '../components/Poll/index';
 
 class PollContainer extends Component {
@@ -63,7 +64,7 @@ class PollContainer extends Component {
       });
 
       if (uid) {
-        this.checkVote(uid)
+        this.checkVote(uid);
       }
     } else {
       history.push('/404');
@@ -179,26 +180,29 @@ class PollContainer extends Component {
   }
 }
 
-export default connect(
-  (state, { match }) => {
-    return {
-      ...state.poll.data,
-      uid: state.auth.uid,
-      authLoading: state.auth.loading,
-      options: selectOrderedOptions(state),
-      created: state.poll.data.created === match.params.pollId,
-      isOwner: selectIsOwner(state),
-      totalVotes: selectTotalVotes(state),
-      isAuthed: selectAuthedState(state),
-    };
-  },
-  {
-    signIn,
-    getInitialPollData,
-    checkIfUserHasVoted,
-    startListeningToResultChanges,
-    selectOption,
-    voteOnPoll,
-    setShowResults,
-  },
-)(PollContainer);
+const enhance = compose(
+  withRouter,
+  withAuth(),
+  connect(
+    (state, { match }) => {
+      return {
+        ...state.poll.data,
+        authLoading: state.auth.loading,
+        options: selectOrderedOptions(state),
+        created: state.poll.data.created === match.params.pollId,
+        isOwner: selectIsOwner(state),
+        totalVotes: selectTotalVotes(state),
+      };
+    },
+    {
+      getInitialPollData,
+      checkIfUserHasVoted,
+      startListeningToResultChanges,
+      selectOption,
+      voteOnPoll,
+      setShowResults,
+    },
+  ),
+);
+
+export default enhance(PollContainer);

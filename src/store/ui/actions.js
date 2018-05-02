@@ -1,12 +1,12 @@
-export const TOGGLE_HEADER_NAV = 'ui/TOGGLE_HEADER_NAV'
+export const TOGGLE_OVERLAY = 'ui/TOGGLE_OVERLAY';
 
-export const toggleHeaderNavAction = (isOpen) => ({
-  type: TOGGLE_HEADER_NAV,
+export const toggleOverlayAction = isOpen => ({
+  type: TOGGLE_OVERLAY,
   payload: {
-    isOpen
-  }
-})
+    isOpen,
+  },
+});
 
-export const toggleHeaderNav = (isOpen) => (dispatch) => {
-  dispatch(toggleHeaderNavAction(isOpen))
-}
+export const toggleOverlay = isOpen => dispatch => {
+  dispatch(toggleOverlayAction(isOpen));
+};

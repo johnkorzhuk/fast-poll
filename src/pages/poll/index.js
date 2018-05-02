@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
 import Poll from '../../containers/Poll';
@@ -15,7 +15,7 @@ const PollPage = () => {
               location={location}
               key={location.key}
               path="/poll/:pollId/"
-              render={props => <Poll {...props} />}
+              component={Poll}
             />
           </div>
         );
@@ -24,9 +24,6 @@ const PollPage = () => {
   );
 };
 
-PollPage.propTypes = {
-  uid: PropTypes.string,
-  signIn: PropTypes.func.isRequired,
-};
+PollPage.propTypes = {};
 
 export default PollPage;

@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'gatsby-link';
 
-import { Button } from '../styledComponents/theme';
-import { Heading2 } from '../styledComponents/typography';
+import { Button } from '../components/styled/theme';
+import { Heading2 } from '../components/styled/typography';
 
 const IndexPage = () => {
   return (

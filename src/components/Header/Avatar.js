@@ -1,10 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-const AVATAR_SIZE = 40
+import { baseButtonStyles } from '../styled/theme';
 
-const Container = styled.div`
+const AVATAR_SIZE = 40;
+
+const Container = styled.button`
+  ${baseButtonStyles} padding: 0;
   border-radius: 50%;
   width: ${AVATAR_SIZE}px;
   height: ${AVATAR_SIZE}px;
@@ -12,19 +15,14 @@ const Container = styled.div`
   background-position: center;
   background-size: contain;
   cursor: pointer;
-`
+`;
 
-const Avatar = ({
-  photoURL,
-  ...props
-}) => {
-  return (
-    <Container photoURL={photoURL} {...props}/>
-  )
-}
+const Avatar = ({ photoURL, ...props }) => {
+  return <Container photoURL={photoURL} {...props} />;
+};
 
 Avatar.propTypes = {
-  photoURL: PropTypes.string
-}
+  photoURL: PropTypes.string,
+};
 
-export default Avatar
+export default Avatar;

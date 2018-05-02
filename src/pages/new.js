@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { arrayMove } from 'react-sortable-hoc';
@@ -14,10 +15,10 @@ import {
   resetOptions,
 } from '../store/poll/options/actions';
 import { selectOrderedOptions } from '../store/poll/options/selectors';
-import { selectAuthedState } from '../store/auth/selectors';
 
-import { Button } from '../styledComponents/theme';
-import { Heading2 } from '../styledComponents/typography';
+import withAuth from '../containers/withAuth';
+import { Button } from '../components/styled/theme';
+import { Heading2 } from '../components/styled/typography';
 import NewPoll from '../components/NewPoll/index';
 
 const CreateButton = Button.extend`
@@ -136,8 +137,8 @@ class NewPollPage extends Component {
 
   handleCreate = () => {
     const { auth } = this.context.firebase;
-    const pollId = shortId.generate();
     const { signIn, uid } = this.props;
+    const pollId = shortId.generate();
 
     if (!uid) {
       // due to our database rules, we can't write unless a uid exists
@@ -194,25 +195,28 @@ class NewPollPage extends Component {
   }
 }
 
-export default connect(
-  state => {
-    return {
-      title: state.poll.data.title,
-      order: state.poll.options.order,
-      options: selectOrderedOptions(state),
-      loading: state.poll.data.loading,
-      isAuthed: selectAuthedState(state),
-      uid: state.auth.uid,
-    };
-  },
-  {
-    updateTitle,
-    addOption,
-    createPoll,
-    removeOption,
-    updateOption,
-    updateOptionOrder,
-    resetOptions,
-    resetPoll,
-  },
-)(NewPollPage);
+const enhance = compose(
+  withAuth(),
+  connect(
+    state => {
+      return {
+        title: state.poll.data.title,
+        order: state.poll.options.order,
+        options: selectOrderedOptions(state),
+        loading: state.poll.data.loading,
+      };
+    },
+    {
+      updateTitle,
+      addOption,
+      createPoll,
+      removeOption,
+      updateOption,
+      updateOptionOrder,
+      resetOptions,
+      resetPoll,
+    },
+  ),
+);
+
+export default enhance(NewPollPage);

@@ -3,7 +3,7 @@ import Link from 'gatsby-link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Container as BaseContainerStyles } from '../../styledComponents/layout';
+import { Container as BaseContainerStyles } from '../styled/layout';
 import SignIn from '../SignIn/index';
 import GoogleIcon from '../Icons/Google';
 import Avatar from './Avatar';
@@ -46,9 +46,9 @@ const Header = ({
   signIn,
   signOut,
   photoURL,
-  toggleHeaderNav,
-  navIsOpen,
-  onNavItemClick
+  toggleOverlay,
+  overlayIsOpen,
+  onNavItemClick,
 }) => (
   <HeaderContainer background={background}>
     <Container>
@@ -59,11 +59,10 @@ const Header = ({
         <MenuContainer>
           <Avatar
             photoURL={photoURL}
-            onClick={() => toggleHeaderNav(!navIsOpen)}
+            onClick={() => toggleOverlay(!overlayIsOpen)}
           />
-          {navIsOpen && (
-            <Nav isOpen={navIsOpen}>
-
+          {overlayIsOpen && (
+            <Nav isOpen={overlayIsOpen}>
               <NavItem onClick={() => onNavItemClick('/polls')}>
                 My Polls
               </NavItem>
@@ -76,7 +75,7 @@ const Header = ({
         <SignIn
           onClick={() => signIn('google')}
           icon={<StyledGoogleIcon />}
-          text="Sign in"
+          text="Sign In"
         />
       )}
     </Container>
@@ -91,12 +90,12 @@ Header.propTypes = {
   background: PropTypes.string,
   signIn: PropTypes.func.isRequired,
   signOut: PropTypes.func.isRequired,
-  toggleHeaderNav: PropTypes.func.isRequired,
+  toggleOverlay: PropTypes.func.isRequired,
   onNavItemClick: PropTypes.func.isRequired,
   title: PropTypes.string,
   photoURL: PropTypes.string,
   isAuthed: PropTypes.bool.isRequired,
-  navIsOpen: PropTypes.bool.isRequired,
+  overlayIsOpen: PropTypes.bool.isRequired,
 };
 
-export default Header
+export default Header;

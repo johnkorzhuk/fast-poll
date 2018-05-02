@@ -1,3 +1,5 @@
+import { toggleOverlayAction } from '../ui/actions';
+
 export const SIGN_IN = 'auth/SIGN_IN';
 export const SIGN_OUT = 'auth/SIGN_OUT';
 export const LOADING = 'auth/LOADING';
@@ -27,13 +29,14 @@ export const setAuthLoading = isLoading => dispatch => {
   dispatch(loadingAction(isLoading));
 };
 
-export const signIn = (auth, provider) => dispatch => {
+export const signIn = (firebase, provider) => dispatch => {
   dispatch(loadingAction(true));
   switch (provider) {
     // the auth listener will handle the success cases
     case 'google':
-      return auth()
-        .signInWithPopup(new auth.GoogleAuthProvider())
+      return firebase
+        .auth()
+        .signInWithPopup(new firebase.auth.GoogleAuthProvider())
         .then(() => {
           dispatch(loadingAction(false));
         })
@@ -45,7 +48,8 @@ export const signIn = (auth, provider) => dispatch => {
         });
 
     case 'anonymous':
-      return auth()
+      return firebase
+        .auth()
         .signInAnonymously()
         .then(() => {
           dispatch(loadingAction(false));
@@ -65,11 +69,13 @@ export const signIn = (auth, provider) => dispatch => {
   }
 };
 
-export const signOut = auth => dispatch => {
-  return auth()
+export const signOut = firebase => dispatch => {
+  return firebase
+    .auth()
     .signOut()
     .then(() => {
       dispatch(signOutAction());
+      dispatch(toggleOverlayAction(false));
     });
 };
 
@@ -83,6 +89,7 @@ export const startListeningToAuthChanges = firebase => dispatch => {
       // otherwise sign-out!
       dispatch(signOutAction());
       dispatch(loadingAction(false));
+      dispatch(toggleOverlayAction(false));
     }
   });
 };

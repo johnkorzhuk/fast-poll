@@ -1,40 +1,43 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import { toggleHeaderNav } from '../store/ui/actions'
+import { toggleOverlay } from '../store/ui/actions';
 
-import Header from '../components/Header/index'
+import Header from '../components/Header/index';
+import withAuth from './withAuth';
 
 class HeaderContainer extends React.Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    toggleHeaderNav: PropTypes.func.isRequired,
-  }
+    toggleOverlay: PropTypes.func.isRequired,
+  };
 
-  handleNavItemClick = (to) => {
-    const { history, toggleHeaderNav } = this.props
+  handleNavItemClick = to => {
+    const { history } = this.props;
 
-    history.push(to)
-    toggleHeaderNav(false)
-  }
+    history.push(to);
+  };
 
   render() {
-    return (
-      <Header {...this.props} onNavItemClick={this.handleNavItemClick}/>
-    )
+    return <Header {...this.props} onNavItemClick={this.handleNavItemClick} />;
   }
 }
 
 const enhance = compose(
+  withAuth(true),
   withRouter,
-  connect((state) => {
-    return {
-      navIsOpen: state.ui.headerNav.isOpen
-    }
-  }, { toggleHeaderNav })
-)
+  connect(
+    state => {
+      return {
+        ...state.auth,
+        overlayIsOpen: state.ui.overlay,
+      };
+    },
+    { toggleOverlay },
+  ),
+);
 
 export default enhance(HeaderContainer);

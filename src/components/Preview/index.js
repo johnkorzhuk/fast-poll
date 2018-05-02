@@ -19,7 +19,6 @@ const Container = styled(Link)`
   text-decoration: none;
   border-radius: 10px;
 
-
   &:hover {
     filter: grayscale(0);
   }
@@ -39,15 +38,10 @@ const Container = styled(Link)`
       margin-right: 0;
     }
   }
-`
-
+`;
 
 const PollPreview = ({ title, id }) => {
-  return (
-    <Container to={`/poll/${id}`}>
-      {title}
-    </Container>
-  );
+  return <Container to={`/poll/${id}`}>{title}</Container>;
 };
 
 PollPreview.propTypes = {

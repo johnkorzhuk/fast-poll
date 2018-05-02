@@ -11,10 +11,22 @@ const config = {
 };
 
 class Firebase {
-  constructor() {
+  constructor(offline = false) {
     firebase.initializeApp(config);
     this.store = firebase.firestore;
     this.auth = firebase.auth;
+
+    if (offline) {
+      firebase
+        .firestore()
+        .enablePersistence()
+        .then(() => {
+          this.store = firebase.firestore;
+        })
+        .catch(() => {
+          // https://firebase.google.com/docs/firestore/manage-data/enable-offline
+        });
+    }
   }
 
   get polls() {
@@ -26,4 +38,4 @@ class Firebase {
   }
 }
 
-export default new Firebase();
+export default new Firebase(true);
