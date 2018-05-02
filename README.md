@@ -1,7 +1,7 @@
-# Fast Poll
-A fun little side projects for creating polls on the fly. The goal was to make a PWA utilizing the JAMStack architectural pattern. You can find the blogposts I wrote on creating the basics of this application as well as more info on JAMStack here: [part 1](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-1-78a03a633092), [part 2](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-2-9044534ea6bc), and part 3 (coming soon).
+# Fast Poll PWA
+A fun little side project for creating polls on the fly. The goal was to make a PWA utilizing the JAMStack architectural pattern. You can find the blogposts I wrote on creating the basics of this application as well as more info on JAMStack here: [part 1](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-1-78a03a633092), [part 2](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-2-9044534ea6bc), and part 3 (coming soon).
 
-A lighthouse report for [www.fastpoll.co](https://www.fastpoll.co) can be found [here](https://googlechrome.github.io/lighthouse/viewer/?gist=6a8f62e43cb4aa349aa2033984c7aaa7).
+A lighthouse report for [www.fastpoll.co](https://www.fastpoll.co) can be found [here](https://googlechrome.github.io/lighthouse/viewer/?gist=6a8f62e43cb4aa349aa2033984c7aaa7). Keep in mind your results may vary. Try running the test multiple times if you get differing results.
 
 ## A few key points I wanted to hit on this project:
 - [x]: The application works offline. *With the exception of non-cached dynamic data.
@@ -28,6 +28,12 @@ Clone the repository and run `npm install`.
 - For a production build, run `npm run build`.
 
 You can find the other scripts in the [package.json](./package.json).
+
+# Known issues and bugs
+
+If you know why or how to fix any of these, please create an issue letting me know.
+- I'm unable to use async-await in src/ directory. During the `Building static HTML for pages` process when I build the application for production an error is thrown. See [issue #1](https://github.com/johnkorzhuk/fast-poll/issues/1).
+- All pages depend on firebase.js since my provider is wrapping the application in [gatsby-browser.js](./gatsby-browser.js). Directly importing it in the ./src directory throws a webpack error. See [issue #2](https://github.com/johnkorzhuk/fast-poll/issues/2).
 
 
 ### A big thank you to [Ted Kulakevich](https://dribbble.com/tedkdesigns) for help with the design.
