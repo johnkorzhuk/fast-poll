@@ -15,7 +15,7 @@ module.exports = {
       options: {
         name: 'Polling App',
         short_name: 'Polling App',
-        start_url: '/new',
+        start_url: '/',
         background_color: '#08AEEA',
         theme_color: '#2AF598',
         display: 'minimal-ui',
