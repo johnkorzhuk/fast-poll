@@ -8,7 +8,6 @@ export const baseButtonStyles = css`
   border-radius: 20px;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   font-size: 1.4rem;
-  vertical-align: center;
   outline: none;
 `;
 

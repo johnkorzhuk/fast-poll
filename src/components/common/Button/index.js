@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Link from 'gatsby-link';
 
-import { Button as BaseButton } from '../styled/theme';
+import { Button as BaseButton, baseButtonStyles } from '../styled/theme';
 import Icon from '../icons/index';
 
-const Container = styled.div`
+const Container = styled.button`
+  ${baseButtonStyles};
+  padding: 0;
   position: relative;
-  display: inline-block;
-  outline: none;
 
   &:hover,
   &:focus {
@@ -17,12 +17,13 @@ const Container = styled.div`
       opacity: 1;
     }
   }
+
+  > a {
+    text-decoration: none;
+  }
 `;
 
-const LinkButton = BaseButton.extend`
-  text-decoration: none;
-  display: inline-block;
-`.withComponent(Link);
+const ButtonDiv = BaseButton.withComponent('div')
 
 const Gradient = styled.div`
   opacity: 0;
@@ -50,25 +51,27 @@ const IconContainer = styled.i`
 
 const Button = ({ type, children, to, icon, iconSize, ...props }) => {
   return (
-    <Container tabIndex={0} {...props}>
+    <Container {...props}>
       {to ? (
-        <LinkButton type={type} to={to} icon={!!icon} iconSize={iconSize}>
-          {children}
-          {icon && (
-            <IconContainer  size={iconSize}>
-              <Icon icon={icon} size={iconSize} />
-            </IconContainer>
-          )}
-        </LinkButton>
+        <Link to={to}>
+          <ButtonDiv type={type} icon={!!icon} iconSize={iconSize}>
+            {children}
+            {icon && (
+              <IconContainer  size={iconSize}>
+                <Icon icon={icon} size={iconSize} />
+              </IconContainer>
+            )}
+          </ButtonDiv>
+        </Link>
       ) : (
-        <BaseButton type={type} icon={!!icon} iconSize={iconSize}>
+        <ButtonDiv type={type} icon={!!icon} iconSize={iconSize}>
           {children}
           {icon && (
             <IconContainer  size={iconSize}>
               <Icon icon={icon} size={iconSize} />
             </IconContainer>
           )}
-        </BaseButton>
+        </ButtonDiv>
       )}
       <Gradient type={type} className="js-gradient" />
     </Container>
@@ -77,10 +80,10 @@ const Button = ({ type, children, to, icon, iconSize, ...props }) => {
 
 Button.propTypes = {
   type: PropTypes.string.isRequired,
-  children: PropTypes.element,
+  children: PropTypes.string,
   to: PropTypes.string,
   icon: PropTypes.string,
-  iconSize: PropTypes.oneOfType(PropTypes.string, PropTypes.number)
+  iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default Button;

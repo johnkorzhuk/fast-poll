@@ -41,7 +41,7 @@ Icon.defaultProps = {
 Icon.propTypes = {
   icon: PropTypes.string.isRequired,
   color: PropTypes.string,
-  size: PropTypes.oneOfType(PropTypes.string, PropTypes.number)
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 export default Icon

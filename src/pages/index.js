@@ -18,7 +18,7 @@ const IndexPage = () => {
         nulla nisi sunt ea.
       </Paragraph>
       
-      <Button to="/new" type="positive" icon="add-circle" iconSize={18}>New Poll  </Button>
+      <Button to="/new" type="positive" icon="add-circle" iconSize={18}>New Poll</Button>
       
     </main>
   );
