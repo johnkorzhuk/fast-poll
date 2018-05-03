@@ -66,8 +66,8 @@ const ButtonContainer = styled.div`
   padding: 0 ${CONTAINER_PADDING}px 30px;
 
   > button {
-    &:first-child {
-      margin-right: 20px;
+    &:last-child {
+      margin-left: 20px;
     }
   }
 `;
