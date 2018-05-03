@@ -2,15 +2,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
-import { ServerStyleSheet } from 'styled-components'
+import { ServerStyleSheet, ThemeProvider } from 'styled-components'
 
+import theme from './src/constants/theme'
 import createStore from './src/store/index';
 
 exports.replaceRenderer = ({ bodyComponent, replaceBodyHTMLString, setHeadComponents }) => {
   const store = createStore();
 
   const ConnectedBody = () => (
-    <Provider store={store}>{bodyComponent}</Provider>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>{bodyComponent}</Provider>
+    </ThemeProvider>
   );
 
   const sheet = new ServerStyleSheet()

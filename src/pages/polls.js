@@ -16,7 +16,7 @@ import { getPollHistory } from '../store/history/actions';
 import { checkIfUserHasVoted } from '../store/poll/actions';
 
 import withAuth from '../containers/withAuth';
-import { Heading2 } from '../components/styled/typography';
+import { Heading1 } from '../components/common/styled/typography';
 import PollPreview from '../components/Preview/index';
 
 const Container = styled.main`
@@ -83,7 +83,7 @@ class MyPolls extends Component {
 
     return (
       <Container>
-        <Heading2>my polls</Heading2>
+        <Heading1>my polls</Heading1>
 
         <PollItemListContainer>
           {created.map(poll => {
@@ -91,7 +91,7 @@ class MyPolls extends Component {
           })}
         </PollItemListContainer>
 
-        <Heading2>voted on</Heading2>
+        <Heading1>voted on</Heading1>
         <PollItemListContainer>
           {votedOn.map(poll => {
             return <PollPreview key={poll.id} {...poll} />;

@@ -7,7 +7,7 @@ import { withPrefix } from 'gatsby-link';
 import { toggleOverlay } from '../store/ui/actions';
 
 import Header from '../containers/Header';
-import { Container as BaseContainerStyles } from '../components/styled/layout';
+import { Container as BaseContainerStyles } from '../components/common/styled/layout';
 
 import './index.css';
 
@@ -57,10 +57,10 @@ class TemplateWrapper extends Component {
             sizes="16x16"
             href={withPrefix('/favicons/favicon-16x16.png')}
           />
+          <link href="https://fonts.googleapis.com/css?family=Lato:700|Open+Sans:400,600" rel="stylesheet" />
         </Helmet>
         <Header
           background="background-image: linear-gradient(116deg, #08AEEA 0%, #2AF598 100%)"
-          title={data.site.siteMetadata.title}
         />
         <Container>
           {children({

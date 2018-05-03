@@ -17,8 +17,8 @@ import {
 import { selectOrderedOptions } from '../store/poll/options/selectors';
 
 import withAuth from '../containers/withAuth';
-import { Button } from '../components/styled/theme';
-import { Heading2 } from '../components/styled/typography';
+import { Button } from '../components/common/styled/theme';
+import { Heading1 } from '../components/common/styled/typography';
 import NewPoll from '../components/NewPoll/index';
 
 const CreateButton = Button.extend`
@@ -161,7 +161,7 @@ class NewPollPage extends Component {
 
     return (
       <div>
-        <Heading2>Create a new Poll</Heading2>
+        <Heading1>Create a new Poll</Heading1>
         <TitleContainer>
           <TitleLabel htmlFor="newPollTitle">Title</TitleLabel>
           <TitleInput
@@ -186,7 +186,7 @@ class NewPollPage extends Component {
             Create
           </Button>
 
-          <CreateButton onClick={this.handleAddItem}>Add</CreateButton>
+          <CreateButton onClick={this.handleAddItem} type='positive'>Add</CreateButton>
         </ActionContainer>
       </div>
     );

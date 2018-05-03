@@ -2,7 +2,10 @@ import React, { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import { baseButtonStyles } from '../common/styled/theme'
+
 const Container = styled.button`
+  ${baseButtonStyles};
   display: flex;
   align-items: center;
   justify-content: space-around;

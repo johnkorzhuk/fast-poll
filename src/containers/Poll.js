@@ -76,6 +76,7 @@ class PollContainer extends Component {
   componentWillReceiveProps(nextProps) {
     const { uid, authLoading, signIn } = this.props;
     const { uid: nextUid, authLoading: nextAuthLoading } = nextProps;
+    
     if ((!uid && !nextUid) || (uid && !nextUid)) {
       if (!authLoading && !nextAuthLoading) {
         signIn('anonymous');

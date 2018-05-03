@@ -1,8 +1,8 @@
 {
-  "name": "gatsby-starter-default",
-  "description": "Gatsby default starter",
+  "name": "fast-poll",
+  "description": "Create polls on the fly",
   "version": "1.0.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "John Korzhuk <jkorzhuk@gmail.com>",
   "dependencies": {
     "firebase": "^4.11.0",
     "gatsby": "^1.9.158",
@@ -17,6 +17,7 @@
     "react-iscroll": "^2.0.3",
     "react-redux": "^5.0.7",
     "react-sortable-hoc": "^0.6.8",
+    "react-spring": "^5.1.0",
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
@@ -25,7 +26,15 @@
     "styled-components": "^3.1.6"
   },
   "keywords": [
-    "gatsby"
+    "gatsby",
+    "pwa",
+    "firebase",
+    "firestore",
+    "react",
+    "redux",
+    "styled-components",
+    "netlify",
+    "JAMStack"
   ],
   "license": "MIT",
   "main": "n/a",

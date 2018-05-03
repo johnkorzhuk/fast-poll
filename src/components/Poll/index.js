@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-import { Heading2 } from '../styled/typography';
-import { Button } from '../styled/theme';
+import { Heading1 } from '../common/styled/typography';
+import { Button } from '../common/styled/theme';
 
 const Container = styled.section`
   margin-top: 50px;
@@ -111,7 +111,7 @@ const Poll = ({
 
   return (
     <Container>
-      <Heading2>{title || 'loading...'}</Heading2>
+      <Heading1>{title || 'loading...'}</Heading1>
       <div>
         {renderOptions &&
           options.map(option => {
@@ -141,10 +141,10 @@ const Poll = ({
       </div>
       <ButtonContainer>
         {renderShowResultsButton && (
-          <Button onClick={onShowResults}>See Results</Button>
+          <Button onClick={onShowResults} type='secondary'>See Results</Button>
         )}
         {renderVoteButton && (
-          <Button disabled={voteIsDisabled} onClick={!voteIsDisabled && onVote}>
+          <Button disabled={voteIsDisabled} onClick={!voteIsDisabled && onVote} type='positive'>
             Vote
           </Button>
         )}

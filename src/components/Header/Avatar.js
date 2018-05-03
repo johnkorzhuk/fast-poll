@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { baseButtonStyles } from '../styled/theme';
+import { baseButtonStyles } from '../common/styled/theme';
 
 const AVATAR_SIZE = 40;
 
