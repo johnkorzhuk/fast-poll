@@ -1,7 +1,4 @@
-import Google from './Google'
-import FastPoll from './FastPoll'
+import Google from './Google';
+import FastPoll from './FastPoll';
 
-export {
-  Google,
-  FastPoll,
-}
+export { Google, FastPoll };

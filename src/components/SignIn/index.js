@@ -2,7 +2,7 @@ import React, { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { baseButtonStyles } from '../common/styled/theme'
+import { baseButtonStyles } from '../common/styled/theme';
 
 const Container = styled.button`
   ${baseButtonStyles};

@@ -3,7 +3,7 @@ import Link from 'gatsby-link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import headerBackgroundPNG from '../../assets/images/header.png'
+import headerBackgroundPNG from '../../assets/images/header.png';
 
 import { Container as BaseContainerStyles } from '../common/styled/layout';
 import SignIn from '../SignIn/index';

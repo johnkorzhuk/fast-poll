@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const HORIZONTAL_PADDING = 25
+const HORIZONTAL_PADDING = 25;
 
 export const baseButtonStyles = css`
   padding: 8px ${HORIZONTAL_PADDING}px;
@@ -24,5 +24,7 @@ export const Button = styled.button`
   transition: filter 200ms linear;
   ${({ icon, iconSize }) =>
     icon &&
-    `padding-right: calc(${typeof iconSize === 'number' ? `${iconSize}px` : iconSize}`} + ${HORIZONTAL_PADDING}px);
+    `padding-right: calc(${
+      typeof iconSize === 'number' ? `${iconSize}px` : iconSize
+    }`} + ${HORIZONTAL_PADDING}px);
 `;

@@ -57,11 +57,12 @@ class TemplateWrapper extends Component {
             sizes="16x16"
             href={withPrefix('/favicons/favicon-16x16.png')}
           />
-          <link href="https://fonts.googleapis.com/css?family=Lato:700|Open+Sans:400,600" rel="stylesheet" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Lato:700|Open+Sans:400,600"
+            rel="stylesheet"
+          />
         </Helmet>
-        <Header
-          background="background-image: linear-gradient(116deg, #08AEEA 0%, #2AF598 100%)"
-        />
+        <Header background="background-image: linear-gradient(116deg, #08AEEA 0%, #2AF598 100%)" />
         <Container>
           {children({
             ...props,

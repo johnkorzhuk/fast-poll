@@ -45,7 +45,8 @@
     "lint": "eslint **/*.{js,jsx} --quiet",
     "test": "jest",
     "test:w": "jest --watch",
-    "deploy": "npm run build && netlify deploy"
+    "deploy": "npm run build && netlify deploy",
+    "precommit": "pretty-quick --staged"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
@@ -59,9 +60,11 @@
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.6.1",
     "firebase-mock": "^2.2.2",
+    "husky": "^0.14.3",
     "jest": "^22.4.3",
     "jest-styled-components": "^5.0.1",
     "prettier": "^1.10.2",
+    "pretty-quick": "^1.4.1",
     "redux-logger": "^3.0.6",
     "redux-mock-store": "^1.5.1"
   }

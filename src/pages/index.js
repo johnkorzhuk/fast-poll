@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Heading1, Paragraph } from '../components/common/styled/typography';
 
-import Button from '../components/common/Button/index'
+import Button from '../components/common/Button/index';
 
 const IndexPage = () => {
   return (
@@ -17,9 +17,10 @@ const IndexPage = () => {
         pariatur tempor. Consectetur culpa tempor dolore amet officia dolore
         nulla nisi sunt ea.
       </Paragraph>
-      
-      <Button to="/new" type="positive" icon="add-circle" iconSize={18}>New Poll</Button>
-      
+
+      <Button to="/new" type="positive" icon="add-circle" iconSize={18}>
+        New Poll
+      </Button>
     </main>
   );
 };

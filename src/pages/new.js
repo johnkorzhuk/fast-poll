@@ -186,7 +186,9 @@ class NewPollPage extends Component {
             Create
           </Button>
 
-          <CreateButton onClick={this.handleAddItem} type='positive'>Add</CreateButton>
+          <CreateButton onClick={this.handleAddItem} type="positive">
+            Add
+          </CreateButton>
         </ActionContainer>
       </div>
     );

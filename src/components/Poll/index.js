@@ -141,10 +141,15 @@ const Poll = ({
       </div>
       <ButtonContainer>
         {renderShowResultsButton && (
-          <Button onClick={onShowResults} type='secondary'>See Results</Button>
+          <Button onClick={onShowResults} type="secondary">
+            See Results
+          </Button>
         )}
         {renderVoteButton && (
-          <Button disabled={voteIsDisabled} onClick={!voteIsDisabled && onVote} type='positive'>
+          <Button
+            disabled={voteIsDisabled}
+            onClick={!voteIsDisabled && onVote}
+            type="positive">
             Vote
           </Button>
         )}

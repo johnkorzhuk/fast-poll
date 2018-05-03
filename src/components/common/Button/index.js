@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Link from 'gatsby-link';
 
 import { Button as BaseButton, baseButtonStyles } from '../styled/theme';
@@ -11,19 +11,23 @@ const Container = styled.button`
   padding: 0;
   position: relative;
 
-  &:hover,
-  &:focus {
-    > .js-gradient {
-      opacity: 1;
-    }
-  }
+  ${({ disabled }) =>
+    !disabled &&
+    css`
+      &:hover,
+      &:focus {
+        > .js-gradient {
+          opacity: 1;
+        }
+      }
+    `};
 
   > a {
     text-decoration: none;
   }
 `;
 
-const ButtonDiv = BaseButton.withComponent('div')
+const ButtonDiv = BaseButton.withComponent('div');
 
 const Gradient = styled.div`
   opacity: 0;
@@ -45,29 +49,37 @@ const IconContainer = styled.i`
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  height: ${({ size }) => typeof size === 'number' ? `${size}px` : size};
-  width: ${({ size }) => typeof size === 'number' ? `${size}px` : size};
+  height: ${({ size }) => (typeof size === 'number' ? `${size}px` : size)};
+  width: ${({ size }) => (typeof size === 'number' ? `${size}px` : size)};
 `;
 
-const Button = ({ type, children, to, icon, iconSize, ...props }) => {
+const Button = ({ type, children, to, icon, iconSize, disabled, ...props }) => {
   return (
-    <Container {...props}>
-      {to ? (
+    <Container {...props} disabled={disabled}>
+      {to && !disabled ? (
         <Link to={to}>
-          <ButtonDiv type={type} icon={!!icon} iconSize={iconSize}>
+          <ButtonDiv
+            type={type}
+            icon={!!icon}
+            iconSize={iconSize}
+            disabled={disabled}>
             {children}
             {icon && (
-              <IconContainer  size={iconSize}>
+              <IconContainer size={iconSize}>
                 <Icon icon={icon} size={iconSize} />
               </IconContainer>
             )}
           </ButtonDiv>
         </Link>
       ) : (
-        <ButtonDiv type={type} icon={!!icon} iconSize={iconSize}>
+        <ButtonDiv
+          type={type}
+          icon={!!icon}
+          iconSize={iconSize}
+          disabled={disabled}>
           {children}
           {icon && (
-            <IconContainer  size={iconSize}>
+            <IconContainer size={iconSize}>
               <Icon icon={icon} size={iconSize} />
             </IconContainer>
           )}
@@ -81,9 +93,10 @@ const Button = ({ type, children, to, icon, iconSize, ...props }) => {
 Button.propTypes = {
   type: PropTypes.string.isRequired,
   children: PropTypes.string,
+  disabled: PropTypes.bool,
   to: PropTypes.string,
   icon: PropTypes.string,
-  iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  iconSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Button;
