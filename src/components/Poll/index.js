@@ -1,88 +1,69 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { Heading1 } from '../common/styled/typography';
-import { Button } from '../common/styled/theme';
+import {
+  Heading1 as BaseHeading1,
+  primaryBold,
+  primarySemiBold,
+} from '../common/styled/typography';
+import { Selection as BaseSelection } from '../common/styled/theme';
+import { IconContainer as BaseIconContainer } from '../common/styled/layout';
+import Button from '../common/Button/index';
+import Icon from '../common/icons/index';
+
+const CONTAINER_PADDING = 50;
 
 const Container = styled.section`
   margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  padding: 0;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border-radius: 30px;
 `;
 
-const OptionText = styled.span`
-  flex: 10;
+const OptionsContainer = styled.div`
+  width: 100%;
+  padding: 0 ${CONTAINER_PADDING}px;
 `;
+
+const Heading1 = BaseHeading1.extend`
+  width: 100%;
+  padding: 30px ${CONTAINER_PADDING}px 20px;
+  text-align: center;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+  margin-bottom: ${CONTAINER_PADDING}px;
+`;
+
+const SelectionButton = BaseSelection.extend`
+  cursor: pointer;
+  text-align: left;
+  border-color: ${({ active, theme }) =>
+    active ? theme.colors.darkGray : 'transparent'};
+  transition: border-color 200ms linear;
+`.withComponent('button');
 
 const OptionResult = styled.div`
-  padding-left: 10px;
-  margin-left: 10px;
-  flex: 1;
-  font-weight: bold;
-  height: 100%;
-  text-align: center;
-`;
-
-// We could have split this component into two: OptionButton for when the user
-// has yet to vote and OptionSelection for when the user has voted to clean
-// up this component. I did it this way to show the versatility of styled-
-// components.
-const Option = styled(
-  ({
-    showResults,
-    // destructure these next two props so that react
-    // doesn't complain about unsupported html tag attributes
-    // https://reactjs.org/warnings/unknown-prop.html
-    selected,
-    optionIsSelected,
-    ...props
-  }) => (showResults ? <div {...props} /> : <button {...props} />),
-)`
+  ${primaryBold()};
+  position: absolute;
+  right: ${({ selected }) => (selected ? '34px' : '10px')};
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
-  font-family: Roboto, sans-serif;
-  margin: 20px 0;
-  background-color: white;
-  border: none;
-  padding: 10px 20px;
-  box-shadow: 0 10px 20px
-    ${({ selected }) =>
-      selected ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.2)'};
-  transition: transform 150ms linear, box-shadow 150ms linear,
-    color 150ms linear;
-  cursor: ${({ showResults }) => (showResults ? 'default' : 'pointer')};
-  color: ${({ selected, optionIsSelected }) =>
-    selected
-      ? 'rgba(0, 0, 0, 0.8)'
-      : optionIsSelected ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.6)'};
-
-  ${({ showResults }) =>
-    showResults
-      ? css`
-          &:hover,
-          &:focus {
-            color: rgba(0, 0, 0, 0.8);
-          }
-        `
-      : css`
-          &:hover,
-          &:focus {
-            transform: ${({ selected }) =>
-              selected ? 'translateY(0)' : 'translateY(-3px)'};
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            color: rgba(0, 0, 0, 0.8);
-          }
-        `};
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 30px;
+  margin-top: 70px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${({ showResults }) =>
+    showResults ? 'center' : 'flex-end'};
   width: 100%;
   min-height: 36px;
+  padding: 0 ${CONTAINER_PADDING}px 30px;
 
   > button {
     &:first-child {
@@ -90,6 +71,31 @@ const ButtonContainer = styled.div`
     }
   }
 `;
+
+const IconContainer = BaseIconContainer.extend`
+  right: 10px;
+`;
+
+const TotalVotesContainer = styled.div`
+  ${primaryBold('1.8rem')};
+  padding: 0 ${CONTAINER_PADDING}px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const TotalVotes = styled.span`
+  ${primarySemiBold('1.8rem')};
+  margin-left: 20px;
+`;
+
+const Selection = ({ showResults, ...props }) => {
+  if (showResults) {
+    return <BaseSelection {...props} result={showResults} />;
+  }
+
+  return <SelectionButton {...props} result={showResults} />;
+};
 
 const Poll = ({
   loading,
@@ -103,6 +109,7 @@ const Poll = ({
   created,
   isOwner,
   totalVotes,
+  theme,
 }) => {
   const renderOptions = created || (!loading && options.length > 0);
   const renderVoteButton = renderOptions && !showResults;
@@ -112,7 +119,7 @@ const Poll = ({
   return (
     <Container>
       <Heading1>{title || 'loading...'}</Heading1>
-      <div>
+      <OptionsContainer>
         {renderOptions &&
           options.map(option => {
             const { id } = option;
@@ -126,36 +133,67 @@ const Poll = ({
             }
 
             return (
-              <Option
+              <Selection
+                created
                 key={id}
-                selected={selected}
+                active={selected}
                 showResults={showResults}
-                optionIsSelected={!!selection}
                 onClick={() => !showResults && onSelectOption(id)}>
-                <OptionText>{option.text}</OptionText>
+                {option.text}
                 {showResults &&
-                  !Number.isNaN(perc) && <OptionResult>{perc}%</OptionResult>}
-              </Option>
+                  !Number.isNaN(perc) && (
+                    <OptionResult selected={selected}>{perc}%</OptionResult>
+                  )}
+                {selected && (
+                  <IconContainer size={16}>
+                    <Icon
+                      icon="check-circle"
+                      size={16}
+                      gradient={[theme.colors.blue, theme.colors.green]}
+                    />
+                  </IconContainer>
+                )}
+              </Selection>
             );
           })}
-      </div>
-      <ButtonContainer>
+      </OptionsContainer>
+      {showResults && (
+        <TotalVotesContainer>
+          Total votes <TotalVotes>{totalVotes}</TotalVotes>
+        </TotalVotesContainer>
+      )}
+      <ButtonContainer showResults={showResults}>
         {renderShowResultsButton && (
-          <Button onClick={onShowResults} type="secondary">
+          <Button
+            onClick={onShowResults}
+            type="secondary"
+            icon="eye-circle"
+            iconSize={18}>
             See Results
           </Button>
         )}
         {renderVoteButton && (
           <Button
+            icon="check-circle"
+            iconSize={18}
             disabled={voteIsDisabled}
             onClick={!voteIsDisabled && onVote}
             type="positive">
             Vote
           </Button>
         )}
+        {showResults && (
+          <Button to="/new" type="positive">
+            New Poll
+          </Button>
+        )}
       </ButtonContainer>
     </Container>
   );
+};
+
+Selection.propTypes = {
+  showResults: PropTypes.bool,
 };
 
 Poll.propTypes = {
@@ -177,6 +215,7 @@ Poll.propTypes = {
   onSelectOption: PropTypes.func.isRequired,
   onVote: PropTypes.func.isRequired,
   onShowResults: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
 export default Poll;

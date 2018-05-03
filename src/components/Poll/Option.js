@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { SortableHandle } from 'react-sortable-hoc';
 
 import { Selection } from '../common/styled/theme';
+import { IconContainer as BaseIconContainer } from '../common/styled/layout';
 import Icon from '../common/icons/index';
 import Button from '../common/Button/index';
 
@@ -14,16 +15,9 @@ const OptionInputItem = styled.input`
   padding: 0;
 `;
 
-const ActionItem = styled.i`
-  position: absolute;
+const IconContainer = BaseIconContainer.extend`
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
   cursor: pointer;
-  height: ${({ size }) =>
-    size ? (typeof size === 'number' ? `${size}px` : size) : 'auto'};
-  width: ${({ size }) =>
-    size ? (typeof size === 'number' ? `${size}px` : size) : 'auto'};
 `;
 
 const ActionButton = styled(Button)`
@@ -107,13 +101,13 @@ const Option = ({
           ]
         : [
             <span key="test">{text}</span>,
-            <ActionItem
+            <IconContainer
               key="delete"
               size={18}
               onClick={() => onDelete(id)}
               title="Delete">
               <CloseCircle color={theme.colors.darkGray} size={18} />
-            </ActionItem>,
+            </IconContainer>,
           ]}
     </Selection>
   );

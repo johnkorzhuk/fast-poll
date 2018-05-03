@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import Link from 'gatsby-link';
 
 import { Button as BaseButton, baseButtonStyles } from '../styled/theme';
+import { IconContainer as BaseIconContainer } from '../styled/layout';
 import Icon from '../icons/index';
 
 const Container = styled.button`
@@ -18,7 +19,7 @@ const Container = styled.button`
       &:hover,
       &:focus {
         > .js-gradient {
-          opacity: 1;
+          opacity: 0.75;
         }
       }
     `};
@@ -46,13 +47,8 @@ const Gradient = styled.div`
   height: 100%;
 `;
 
-const IconContainer = styled.i`
-  position: absolute;
+const IconContainer = BaseIconContainer.extend`
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: ${({ size }) => (typeof size === 'number' ? `${size}px` : size)};
-  width: ${({ size }) => (typeof size === 'number' ? `${size}px` : size)};
 `;
 
 const Button = ({ type, children, to, icon, iconSize, disabled, ...props }) => {

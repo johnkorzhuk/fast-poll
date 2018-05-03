@@ -238,6 +238,7 @@ class NewPollPage extends Component {
           {...newest}
           newest
           editing
+          tabIndex={0}
           theme={theme}
           getNewOptionInput={this.getNewOptionInput}
           onTextChange={this.handleTextChange}

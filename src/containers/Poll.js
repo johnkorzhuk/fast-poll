@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withTheme } from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
@@ -177,6 +178,7 @@ class PollContainer extends Component {
 const enhance = compose(
   withRouter,
   withAuth(),
+  withTheme,
   connect(
     (state, { match }) => {
       return {

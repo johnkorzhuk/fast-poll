@@ -34,14 +34,14 @@ const renderIcon = (icon, props) => {
   }
 };
 
-const Icon = ({ icon, color, size, aspectRatio, ...props }) => {
+const Icon = ({ icon, color, size, aspectRatio, gradient, ...props }) => {
   const [width, height] = aspectRatio;
   const hasAR = aspectRatio.length === 2;
 
   if (!hasAR) {
     return (
       <SVG {...props} size={size} viewBox="0 0 24 24">
-        {renderIcon(icon, { color, size })}
+        {renderIcon(icon, { color, size, gradient })}
       </SVG>
     );
   }
@@ -53,7 +53,7 @@ const Icon = ({ icon, color, size, aspectRatio, ...props }) => {
       width={size}
       height={height / width * size}
       viewBox={`0 0 ${width} ${height}`}>
-      {renderIcon(icon, { color, size })}
+      {renderIcon(icon, { color, size, gradient })}
     </SVG>
   );
 };
@@ -62,6 +62,7 @@ Icon.defaultProps = {
   color: '#fff',
   size: 24,
   aspectRatio: [],
+  gradient: [],
 };
 
 Icon.propTypes = {
@@ -69,6 +70,7 @@ Icon.propTypes = {
   color: PropTypes.string,
   aspectRatio: PropTypes.arrayOf(PropTypes.number.isRequired),
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  gradient: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Icon;
