@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'gatsby-link';
+import GatsbyLink from 'gatsby-link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -35,6 +35,11 @@ const StyledGoogleIcon = styled(GoogleIcon)`
 
 const MenuContainer = styled.div`
   position: relative;
+`;
+
+const Link = styled(GatsbyLink)`
+  width: 60vw;
+  max-width: 350px;
 `;
 
 const BACKGROUND = 'background-color: #20232a';
