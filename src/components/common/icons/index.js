@@ -3,10 +3,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import AddCircle from './AddCircle';
+import CheckCircle from './CheckCircle';
+import EyeCircle from './EyeCircle';
+import Drag from './Drag';
 
 const SVG = styled.svg`
-  width: ${({ size }) => (typeof size === 'number' ? `${size}px` : size)};
-  height: ${({ size }) => (typeof size === 'number' ? `${size}px` : size)};
+  width: ${({ size, width }) =>
+    width ? `${width}px` : typeof size === 'number' ? `${size}px` : size};
+  height: ${({ size, height }) =>
+    height ? `${height}px` : typeof size === 'number' ? `${size}px` : size};
 `;
 
 const renderIcon = (icon, props) => {
@@ -14,17 +19,41 @@ const renderIcon = (icon, props) => {
     case 'add-circle':
       return <AddCircle {...props} />;
 
+    case 'check-circle':
+      return <CheckCircle {...props} />;
+
+    case 'eye-circle':
+      return <EyeCircle {...props} />;
+
+    case 'drag':
+      return <Drag {...props} />;
+
     default:
       // eslint-disable-next-line no-console
-      console.error(`No such icon of type: ${icon} passed to renderIcon`);
-      return null;
+      throw new Error(`No such icon of type: ${icon} passed to renderIcon`);
   }
 };
 
-const Icon = ({ icon, color, ...props }) => {
+const Icon = ({ icon, color, size, aspectRatio, ...props }) => {
+  const [width, height] = aspectRatio;
+  const hasAR = aspectRatio.length === 2;
+
+  if (!hasAR) {
+    return (
+      <SVG {...props} size={size} viewBox="0 0 24 24">
+        {renderIcon(icon, { color, size })}
+      </SVG>
+    );
+  }
+
   return (
-    <SVG {...props} viewBox="0 0 24 24">
-      {renderIcon(icon, { color })}
+    <SVG
+      {...props}
+      size={size}
+      width={size}
+      height={height / width * size}
+      viewBox={`0 0 ${width} ${height}`}>
+      {renderIcon(icon, { color, size })}
     </SVG>
   );
 };
@@ -32,11 +61,13 @@ const Icon = ({ icon, color, ...props }) => {
 Icon.defaultProps = {
   color: '#fff',
   size: 24,
+  aspectRatio: [],
 };
 
 Icon.propTypes = {
   icon: PropTypes.string.isRequired,
   color: PropTypes.string,
+  aspectRatio: PropTypes.arrayOf(PropTypes.number.isRequired),
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 

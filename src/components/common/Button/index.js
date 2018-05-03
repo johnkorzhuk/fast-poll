@@ -10,6 +10,7 @@ const Container = styled.button`
   ${baseButtonStyles};
   padding: 0;
   position: relative;
+  height: 100%;
 
   ${({ disabled }) =>
     !disabled &&
@@ -42,6 +43,7 @@ const Gradient = styled.div`
   z-index: 1;
   border-radius: 20px;
   transition: opacity 200ms linear;
+  height: 100%;
 `;
 
 const IconContainer = styled.i`

@@ -1,24 +1,34 @@
 import styled, { css } from 'styled-components';
 
-export const headingStyles = css`
+export const heading = (fontSize = '3.6rem') => css`
   font-weight: 700;
   font-family: ${({ theme }) => theme.fonts.heading};
   color: ${({ theme }) => theme.colors.black};
+  font-size: ${fontSize};
 `;
 
-export const defaultStyles = css`
-  font-family: ${({ theme }) => theme.fonts.default};
-  font-size: 1.6rem;
+export const primary = (fontSize = '1.6rem') => css`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${fontSize};
+`;
+
+export const primarySemiBold = fontSize => css`
+  ${primary(fontSize)};
+  font-weight: 600;
+`;
+
+export const primaryBold = fontSize => css`
+  ${primary(fontSize)};
+  font-weight: 700;
 `;
 
 export const Heading1 = styled.h1`
-  ${headingStyles};
+  ${heading()};
   margin-bottom: 24px;
-  font-size: 3.6rem;
 `;
 
 export const Paragraph = styled.p`
-  ${defaultStyles};
+  ${primary()};
   color: ${({ theme }) => theme.colors.black};
   margin-bottom: 30px;
 `;

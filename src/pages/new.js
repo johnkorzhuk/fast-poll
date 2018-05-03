@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { arrayMove } from 'react-sortable-hoc';
 import shortId from 'short-id';
 
@@ -13,18 +13,19 @@ import {
   updateOption,
   updateOptionOrder,
   resetOptions,
+  updateNewest,
 } from '../store/poll/options/actions';
 import { selectOrderedOptions } from '../store/poll/options/selectors';
 
 import withAuth from '../containers/withAuth';
-import { Button } from '../components/common/styled/theme';
-import { Heading1 } from '../components/common/styled/typography';
-import NewPoll from '../components/NewPoll/index';
-
-const CreateButton = Button.extend`
-  background-image: linear-gradient(19deg, #21d4fd 0%, #b721ff 100%);
-  margin-left: 20px;
-`;
+import {
+  Heading1,
+  primarySemiBold,
+} from '../components/common/styled/typography';
+import { Input, Label } from '../components/common/styled/theme';
+import NewPoll from '../components/Poll/New';
+import Option from '../components/Poll/Option';
+import Button from '../components/common/Button/index';
 
 const ActionContainer = styled.div`
   display: flex;
@@ -33,18 +34,22 @@ const ActionContainer = styled.div`
 
 const TitleContainer = styled.div`
   display: inline-flex;
-  width: 350px;
+  width: 100%;
   flex-direction: column;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+
+  @media (min-width: 600px) {
+    width: 450px;
+  }
 `;
 
-const TitleLabel = styled.label`
-  font-weight: bold;
+const TitleInput = Input.extend`
+  ${primarySemiBold('1.8rem')};
+  line-height: 1.6rem;
 `;
 
-const TitleInput = styled.input`
-  color: black;
-  font-size: 18px;
+const NewOption = styled(Option)`
+  margin-bottom: 20px;
 `;
 
 class NewPollPage extends Component {
@@ -54,6 +59,7 @@ class NewPollPage extends Component {
 
   static propTypes = {
     history: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
     options: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
@@ -62,10 +68,15 @@ class NewPollPage extends Component {
         votes: PropTypes.number.isRequired,
       }),
     ),
+    newest: PropTypes.shape({
+      id: PropTypes.string,
+      text: PropTypes.string,
+    }),
     order: PropTypes.arrayOf(PropTypes.string).isRequired,
     uid: PropTypes.string,
     title: PropTypes.string,
     signIn: PropTypes.func.isRequired,
+    updateNewest: PropTypes.func.isRequired,
     updateTitle: PropTypes.func.isRequired,
     createPoll: PropTypes.func.isRequired,
     addOption: PropTypes.func.isRequired,
@@ -78,26 +89,55 @@ class NewPollPage extends Component {
   };
 
   componentWillMount() {
-    const { resetPoll, resetOptions } = this.props;
+    const { resetPoll, resetOptions, updateNewest } = this.props;
+    const id = shortId.generate();
 
     resetPoll();
     resetOptions();
+    updateNewest({
+      id,
+    });
   }
 
-  handleKeydown = e => {
-    if (e.which === 27) this.handleToggleEdit(this.editing);
-    if (e.which === 13) this.handleAddItem();
+  getNewOptionInput = node => {
+    this.newOptionInput = node;
+  };
+
+  handleFocusInput = node => {
+    const { options } = this.props;
+
+    if (node && node.value && options.length > 0) {
+      const { value } = node;
+      // focus the end of the text
+      node.focus();
+      node.setSelectionRange(value.length, value.length);
+      node.scrollLeft = node.scrollWidth; // eslint-disable-line no-param-reassign
+    }
+  };
+
+  handleKeydown = (e, id, newest) => {
+    if (e.which === 27 && !newest && id) this.handleToggleEdit(id);
+
+    if (e.which === 13) {
+      if (newest) {
+        this.handleAddItem();
+      } else if (id) {
+        this.handleToggleEdit(id);
+      } else {
+        this.newOptionInput.focus();
+      }
+    }
   };
 
   handleToggleEdit = id => {
-    const { updateOption, options, removeOption } = this.props;
+    const { updateOption, options } = this.props;
     const option = options.find(opt => opt.id === id);
 
-    updateOption(id, { editing: !option.editing });
-
-    if (!option.text) {
-      removeOption(id);
-    }
+    updateOption(id, { editing: !option.editing }).then(() => {
+      if (option.editing) {
+        this.newOptionInput.focus();
+      }
+    });
   };
 
   handleTitleChange = e => {
@@ -107,31 +147,43 @@ class NewPollPage extends Component {
     updateTitle(value);
   };
 
-  handleTextChange = (e, id) => {
-    const { updateOption } = this.props;
+  handleTextChange = (e, id, newest) => {
+    const { updateOption, updateNewest } = this.props;
     const { value } = e.target;
 
-    updateOption(id, { text: value });
+    if (newest) {
+      updateNewest({ text: value });
+    } else {
+      updateOption(id, { text: value });
+    }
   };
 
   handleSortEnd = ({ oldIndex, newIndex }) => {
     const { updateOptionOrder, order } = this.props;
 
-    updateOptionOrder(arrayMove(order, oldIndex, newIndex).filter(Boolean));
+    updateOptionOrder(
+      arrayMove(order, oldIndex, newIndex).filter(Boolean),
+    ).then(() => {
+      this.newOptionInput.focus();
+    });
   };
 
   handleAddItem = () => {
-    const { addOption } = this.props;
-    const id = shortId.generate();
+    const { addOption, newest } = this.props;
 
-    this.editing = id;
-    addOption(id);
+    if (newest.text) {
+      addOption(shortId.generate(), newest).then(() => {
+        this.newOptionInput.focus();
+      });
+    }
   };
 
   handleDelete = id => {
     const { removeOption } = this.props;
 
-    removeOption(id);
+    removeOption(id).then(() => {
+      this.newOptionInput.focus();
+    });
   };
 
   handleCreate = () => {
@@ -156,15 +208,16 @@ class NewPollPage extends Component {
   }
 
   render() {
-    const { title, options } = this.props;
+    const { title, options, theme, newest } = this.props;
     const disableCreate = !title || options.length < 2;
 
     return (
       <div>
         <Heading1>Create a new Poll</Heading1>
         <TitleContainer>
-          <TitleLabel htmlFor="newPollTitle">Title</TitleLabel>
+          <Label htmlFor="newPollTitle">Title</Label>
           <TitleInput
+            autoFocus
             id="newPollTitle"
             value={title}
             onChange={this.handleTitleChange}
@@ -178,17 +231,28 @@ class NewPollPage extends Component {
           onKeyDown={this.handleKeydown}
           onSortEnd={this.handleSortEnd}
           onDelete={this.handleDelete}
+          focusInput={this.handleFocusInput}
+          theme={theme}
+        />
+        <NewOption
+          {...newest}
+          newest
+          editing
+          theme={theme}
+          getNewOptionInput={this.getNewOptionInput}
+          onTextChange={this.handleTextChange}
+          onKeyDown={this.handleKeydown}
+          onAdd={this.handleAddItem}
         />
         <ActionContainer>
           <Button
+            type="positive"
+            icon="check-circle"
+            iconSize={18}
             disabled={disableCreate}
             onClick={!disableCreate && this.handleCreate}>
             Create
           </Button>
-
-          <CreateButton onClick={this.handleAddItem} type="positive">
-            Add
-          </CreateButton>
         </ActionContainer>
       </div>
     );
@@ -197,6 +261,7 @@ class NewPollPage extends Component {
 
 const enhance = compose(
   withAuth(),
+  withTheme,
   connect(
     state => {
       return {
@@ -204,6 +269,7 @@ const enhance = compose(
         order: state.poll.options.order,
         options: selectOrderedOptions(state),
         loading: state.poll.data.loading,
+        newest: state.poll.options.newest,
       };
     },
     {
@@ -215,6 +281,7 @@ const enhance = compose(
       updateOptionOrder,
       resetOptions,
       resetPoll,
+      updateNewest,
     },
   ),
 );

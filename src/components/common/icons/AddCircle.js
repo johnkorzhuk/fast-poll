@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Plus = ({ color }) => {
+const AddCircle = ({ color }) => {
   return (
-    <g id="icon-plus">
+    <g id="icon-add-circle">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -14,8 +14,8 @@ const Plus = ({ color }) => {
   );
 };
 
-Plus.propTypes = {
+AddCircle.propTypes = {
   color: PropTypes.string.isRequired,
 };
 
-export default Plus;
+export default AddCircle;

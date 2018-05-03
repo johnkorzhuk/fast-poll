@@ -58,7 +58,7 @@ class TemplateWrapper extends Component {
             href={withPrefix('/favicons/favicon-16x16.png')}
           />
           <link
-            href="https://fonts.googleapis.com/css?family=Lato:700|Open+Sans:400,600"
+            href="https://fonts.googleapis.com/css?family=Lato:700|Open+Sans:400,600,700"
             rel="stylesheet"
           />
         </Helmet>

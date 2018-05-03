@@ -4,6 +4,7 @@ import {
   UPDATE_OPTION,
   UPDATE_OPTION_ORDER,
   RESET_OPTIONS,
+  UPDATE_NEWEST,
 } from './actions';
 
 export const INITIAL_STATE = {
@@ -12,6 +13,10 @@ export const INITIAL_STATE = {
   // options is a map with the optionId as the keys and
   // option data including results as the values
   data: {},
+  newest: {
+    id: null,
+    text: '',
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -24,9 +29,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.data,
           [action.payload.id]: {
             id: action.payload.id,
-            text: '',
-            editing: true,
+            editing: false,
             votes: 0,
+            ...action.payload.data,
           },
         },
       };
@@ -70,6 +75,15 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         order: [...action.payload.order],
+      };
+
+    case UPDATE_NEWEST:
+      return {
+        ...state,
+        newest: {
+          ...state.newest,
+          ...action.payload.data,
+        },
       };
 
     case RESET_OPTIONS:

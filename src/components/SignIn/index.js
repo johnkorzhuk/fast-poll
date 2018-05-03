@@ -9,7 +9,7 @@ const Container = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 5px 15px;
+  padding: 8px 15px;
   color: rgba(0, 0, 0, 0.54);
   border: none;
   font-family: Roboto, sans-serif;
