@@ -183,7 +183,7 @@ const Poll = ({
           </Button>
         )}
         {showResults && (
-          <Button to="/new" type="positive">
+          <Button to="/new" type="positive" icon="add-circle" iconSize={18}>
             New Poll
           </Button>
         )}
