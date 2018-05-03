@@ -3,7 +3,7 @@ import Link from 'gatsby-link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import headerBackground from '../../assets/images/header.svg'
+import headerBackgroundPNG from '../../assets/images/header.png'
 
 import { Container as BaseContainerStyles } from '../common/styled/layout';
 import SignIn from '../SignIn/index';
@@ -15,7 +15,7 @@ const HeaderContainer = styled.header`
   margin-bottom: 50px;
   background-color: ${({ theme }) => theme.colors.primary};
   background-image: ${({ theme }) => theme.gradients.primary};
-  background: url(${headerBackground});
+  background: url(${headerBackgroundPNG});
   height: 210px;
   background-size: cover;
   display: flex;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Heading1, Paragraph } from '../components/common/styled/typography';
-import Icon from '../components/common/icons/index';
+
 import Button from '../components/common/Button/index'
 
 const IndexPage = () => {
@@ -18,7 +18,7 @@ const IndexPage = () => {
         nulla nisi sunt ea.
       </Paragraph>
       
-      <Button to="/new" type="positive" >New Poll <Icon icon="add-circle" size={18}/> </Button>
+      <Button to="/new" type="positive" icon="add-circle" iconSize={18}>New Poll  </Button>
       
     </main>
   );

@@ -7,7 +7,6 @@ import AddCircle from './AddCircle'
 const SVG = styled.svg`
   width: ${({ size }) => typeof size === 'number' ? `${size}px` : size};
   height: ${({ size }) => typeof size === 'number' ? `${size}px` : size};
-  vertical-align: middle;
 `;
 
 const renderIcon = (icon, props) => {
