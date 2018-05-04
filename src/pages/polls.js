@@ -4,28 +4,44 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import styled from 'styled-components';
 
-// import ReactIScroll from "react-iscroll"
-// import iScroll from "iscroll"
-
 import {
   selectCreatedPolls,
   selectVotedOnPolls,
   selectSortedPolls,
 } from '../store/history/selectors';
 import { getPollHistory } from '../store/history/actions';
-import { checkIfUserHasVoted } from '../store/poll/actions';
 
 import withAuth from '../containers/withAuth';
-import { Heading1 } from '../components/common/styled/typography';
-import PollPreview from '../components/Preview/index';
+import { Heading1, Paragraph } from '../components/common/styled/typography';
+import PollHistory from '../components/PollHistory/index';
+import SignIn from '../components/SignIn/index';
+import { Google as GoogleIcon } from '../components/common/logos/index';
 
 const Container = styled.main`
   height: 100%;
+
+  > h1 {
+    text-align: center;
+  }
 `;
 
-const PollItemListContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+const StyledGoogleIcon = styled(GoogleIcon)`
+  margin-right: 5px;
+`;
+
+const StyledSignIn = styled(SignIn)`
+  display: inline-flex;
+  box-shadow: 0px 10px 30px ${({ theme }) => theme.colors.gray};
+  transition: box-shadow 200ms linear;
+
+  &:hover {
+    box-shadow: 0px 10px 30px ${({ theme }) => theme.colors.darkGray};
+  }
+`;
+
+const StyledParagraph = styled(Paragraph)`
+  display: inline;
+  margin-left: 10px;
 `;
 
 const pollType = PropTypes.arrayOf(
@@ -47,8 +63,9 @@ class MyPolls extends Component {
     votedOn: pollType,
     uid: PropTypes.string.isRequired,
     isAuthed: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     getPollHistory: PropTypes.func.isRequired,
-    checkIfUserHasVoted: PropTypes.func.isRequired,
+    signIn: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -79,24 +96,25 @@ class MyPolls extends Component {
   }
 
   render() {
-    const { created, votedOn } = this.props;
-
+    const { created, votedOn, isAuthed, signIn, loading } = this.props;
     return (
       <Container>
-        <Heading1>my polls</Heading1>
-
-        <PollItemListContainer>
-          {created.map(poll => {
-            return <PollPreview key={poll.id} {...poll} />;
-          })}
-        </PollItemListContainer>
-
-        <Heading1>voted on</Heading1>
-        <PollItemListContainer>
-          {votedOn.map(poll => {
-            return <PollPreview key={poll.id} {...poll} />;
-          })}
-        </PollItemListContainer>
+        <Heading1>Poll History</Heading1>
+        {isAuthed
+          ? [
+              <PollHistory polls={created} heading="Created" key="created" />,
+              <PollHistory polls={votedOn} heading="Voted on" key="voted" />,
+            ]
+          : !loading && (
+              <div>
+                <StyledSignIn
+                  onClick={() => signIn('google')}
+                  icon={<StyledGoogleIcon />}
+                  text="Sign In"
+                />
+                <StyledParagraph>to see your poll history.</StyledParagraph>
+              </div>
+            )}
       </Container>
     );
   }
@@ -111,7 +129,7 @@ const enhance = compose(
         votedOn: selectSortedPolls(selectVotedOnPolls)(state),
       };
     },
-    { getPollHistory, checkIfUserHasVoted },
+    { getPollHistory },
   ),
 );
 

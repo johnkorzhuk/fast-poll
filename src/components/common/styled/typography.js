@@ -27,6 +27,11 @@ export const Heading1 = styled.h1`
   margin-bottom: 24px;
 `;
 
+export const Heading2 = styled.h2`
+  ${heading('2.4rem')};
+  margin-bottom: 18px;
+`;
+
 export const Paragraph = styled.p`
   ${primary()};
   color: ${({ theme }) => theme.colors.black};

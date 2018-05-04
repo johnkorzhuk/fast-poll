@@ -17,7 +17,7 @@ export const addPollsAction = (type, polls) => ({
 });
 
 export const getPollHistory = (firebase, { uid }) => dispatch => {
-  const LIMIT = 12;
+  const LIMIT = 36;
   const userRef = firebase.users.doc(uid);
 
   dispatch(loadingAction(true));

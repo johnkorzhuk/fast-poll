@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import Link from 'gatsby-link';
 
 const Container = styled(Link)`
   height: 80px;
   width: 100%;
-  background-image: linear-gradient(19deg, #21d4fd 0%, #b721ff 100%);
+  background-image: ${({ theme }) => theme.gradients.secondary};
   filter: grayscale(1);
   transition: filter 200ms linear;
   margin-bottom: 40px;

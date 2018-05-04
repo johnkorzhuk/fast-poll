@@ -2,7 +2,12 @@ import React from 'react';
 
 const Google = props => {
   return (
-    <svg width="21" height="21" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
       <g fill="none" fillRule="evenodd">
         <path
           d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"

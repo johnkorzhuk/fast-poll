@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { baseButtonStyles } from '../common/styled/theme';
+import { primarySemiBold } from '../common/styled/typography';
 
 const Container = styled.button`
   ${baseButtonStyles};
+  ${primarySemiBold()};
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 8px 15px;
-  color: rgba(0, 0, 0, 0.54);
+  padding: 8px 20px;
+  color: ${({ theme }) => theme.colors.darkGray};
   border: none;
-  font-family: Roboto, sans-serif;
   font-size: 16px;
   background-color: white;
   cursor: pointer;
@@ -24,13 +25,13 @@ const Container = styled.button`
   }
 
   &:hover {
-    color: rgba(0, 0, 0, 0.8);
+    color: ${({ theme }) => theme.colors.black};
   }
 `;
 
-const Signin = ({ onClick, icon, text }) => {
+const Signin = ({ onClick, icon, text, ...props }) => {
   return (
-    <Container onClick={onClick}>
+    <Container onClick={onClick} {...props}>
       {icon && cloneElement(icon)}
       <span>{text}</span>
     </Container>
