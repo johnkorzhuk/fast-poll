@@ -109,7 +109,6 @@ const Poll = ({
   created,
   isOwner,
   totalVotes,
-  theme,
 }) => {
   const renderOptions = created || (!loading && options.length > 0);
   const renderVoteButton = renderOptions && !showResults;
@@ -146,11 +145,7 @@ const Poll = ({
                   )}
                 {selected && (
                   <IconContainer size={16}>
-                    <Icon
-                      icon="check-circle"
-                      size={16}
-                      gradient={[theme.colors.blue, theme.colors.green]}
-                    />
+                    <Icon icon="check-circle" size={16} gradient="positive" />
                   </IconContainer>
                 )}
               </Selection>
@@ -215,7 +210,6 @@ Poll.propTypes = {
   onSelectOption: PropTypes.func.isRequired,
   onVote: PropTypes.func.isRequired,
   onShowResults: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
 };
 
 export default Poll;

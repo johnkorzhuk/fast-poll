@@ -25,6 +25,7 @@ export default {
     lightGray,
     gray,
     darkGray,
+    red,
     primary: green,
     secondary: blue,
     positive: green,

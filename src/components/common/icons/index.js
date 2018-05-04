@@ -1,63 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 
 import AddCircle from './AddCircle';
 import CheckCircle from './CheckCircle';
 import EyeCircle from './EyeCircle';
 import Drag from './Drag';
+import GradientDefs, { ids } from './GradientDefs';
 
-const SVG = styled.svg`
+const Svg = styled.svg`
   width: ${({ size, width }) =>
     width ? `${width}px` : typeof size === 'number' ? `${size}px` : size};
   height: ${({ size, height }) =>
     height ? `${height}px` : typeof size === 'number' ? `${size}px` : size};
 
   > g {
-    ${({ color, gradient }) => !gradient && `fill: ${color};`};
+    fill: ${({ gradient, color }) =>
+      gradient ? `url(#${ids[gradient]})` : color};
   }
 `;
 
-const Icon = ({ icon, color, size, gradient, ...props }) => {
+const SvgContainer = withTheme(({ color, size, children, theme, ...props }) => {
+  return (
+    <Svg size={size} color={color} {...props}>
+      {children}
+      <GradientDefs theme={theme} />
+    </Svg>
+  );
+});
+
+const Icon = ({ icon, size, ...props }) => {
   switch (icon) {
     case 'add-circle':
       return (
-        <SVG {...props} size={size} viewBox="0 0 24 24" color={color}>
+        <SvgContainer viewBox="0 0 24 24" size={size} {...props}>
           <AddCircle />
-        </SVG>
+        </SvgContainer>
       );
 
     case 'check-circle':
       return (
-        <SVG
-          {...props}
-          gradient={gradient.length === 2}
-          size={size}
-          viewBox="0 0 24 24"
-          color={color}>
-          <CheckCircle gradient={gradient} />
-        </SVG>
+        <SvgContainer viewBox="0 0 24 24" size={size} {...props}>
+          <CheckCircle />
+        </SvgContainer>
       );
 
     case 'eye-circle':
       return (
-        <SVG {...props} size={size} viewBox="0 0 24 24" color={color}>
+        <SvgContainer viewBox="0 0 24 24" size={size} {...props}>
           <EyeCircle />
-        </SVG>
+        </SvgContainer>
       );
 
     case 'drag':
       return (
-        <SVG
-          {...props}
-          gradient={gradient.length === 2}
-          color={color}
+        <SvgContainer
           size={size}
           width={size}
           height={9 / 16 * size}
-          viewBox="0 0 16 9">
-          <Drag gradient={gradient} />
-        </SVG>
+          viewBox="0 0 16 9"
+          {...props}>
+          <Drag />
+        </SvgContainer>
       );
 
     default:
@@ -69,14 +73,13 @@ const Icon = ({ icon, color, size, gradient, ...props }) => {
 Icon.defaultProps = {
   color: '#fff',
   size: 24,
-  gradient: [],
 };
 
 Icon.propTypes = {
   icon: PropTypes.string.isRequired,
   color: PropTypes.string,
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  gradient: PropTypes.arrayOf(PropTypes.string),
+  gradient: PropTypes.oneOf(Object.keys(ids)),
 };
 
 export default Icon;
