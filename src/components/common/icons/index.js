@@ -6,6 +6,8 @@ import AddCircle from './AddCircle';
 import CheckCircle from './CheckCircle';
 import EyeCircle from './EyeCircle';
 import Drag from './Drag';
+import Poll from './Poll';
+import PowerCircle from './PowerCircle';
 import GradientDefs, { ids } from './GradientDefs';
 
 const Svg = styled.svg`
@@ -52,6 +54,13 @@ const Icon = ({ icon, size, ...props }) => {
         </SvgContainer>
       );
 
+    case 'power-circle':
+      return (
+        <SvgContainer viewBox="0 0 24 24" size={size} {...props}>
+          <PowerCircle />
+        </SvgContainer>
+      );
+
     case 'drag':
       return (
         <SvgContainer
@@ -61,6 +70,18 @@ const Icon = ({ icon, size, ...props }) => {
           viewBox="0 0 16 9"
           {...props}>
           <Drag />
+        </SvgContainer>
+      );
+
+    case 'poll':
+      return (
+        <SvgContainer
+          size={size}
+          width={size}
+          height={14 / 20 * size}
+          viewBox="0 0 20 14"
+          {...props}>
+          <Poll />
         </SvgContainer>
       );
 

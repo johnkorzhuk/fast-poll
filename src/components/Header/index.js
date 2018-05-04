@@ -10,16 +10,21 @@ import SignIn from '../SignIn/index';
 import { Google as GoogleIcon, FastPoll } from '../common/logos/index';
 import Avatar from './Avatar';
 import Nav, { NavItem } from './Nav';
+import Icon from '../common/icons/index';
 
 const HeaderContainer = styled.header`
   margin-bottom: 50px;
   background-color: ${({ theme }) => theme.colors.primary};
   background-image: ${({ theme }) => theme.gradients.primary};
   background: url(${headerBackgroundPNG});
-  height: 210px;
+  height: 100px;
   background-size: cover;
   display: flex;
   align-items: center;
+
+  @media (min-width: 800px) {
+    height: 210px;
+  }
 `;
 
 const Container = BaseContainerStyles.extend`
@@ -35,11 +40,19 @@ const StyledGoogleIcon = styled(GoogleIcon)`
 
 const MenuContainer = styled.div`
   position: relative;
+  padding-bottom: 13px;
+  padding-left: 20px;
+  margin-bottom: -13px;
+  margin-left: -20px;
 `;
 
 const Link = styled(GatsbyLink)`
   width: 60vw;
   max-width: 350px;
+`;
+
+const NavIcon = styled(Icon)`
+  margin-right: 10px;
 `;
 
 const BACKGROUND = 'background-color: #20232a';
@@ -60,20 +73,26 @@ const Header = ({
         <FastPoll />
       </Link>
       {isAuthed ? (
-        <MenuContainer>
+        <MenuContainer
+          onMouseEnter={() => !overlayIsOpen && toggleOverlay(!overlayIsOpen)}
+          onMouseLeave={() => overlayIsOpen && toggleOverlay(!overlayIsOpen)}>
           <Avatar
             photoURL={photoURL}
             onClick={() => toggleOverlay(!overlayIsOpen)}
           />
-          {overlayIsOpen && (
-            <Nav isOpen={overlayIsOpen}>
-              <NavItem onClick={() => onNavItemClick('/polls')}>
-                My Polls
-              </NavItem>
+          <Nav isOpen={overlayIsOpen}>
+            <NavItem
+              onClick={() => onNavItemClick('/polls')}
+              isOpen={overlayIsOpen}>
+              <NavIcon size={18} gradient="secondary" icon="poll" />
+              My Polls
+            </NavItem>
 
-              <NavItem onClick={signOut}>Sign Out</NavItem>
-            </Nav>
-          )}
+            <NavItem onClick={signOut} isOpen={overlayIsOpen}>
+              <NavIcon size={18} gradient="primary" icon="power-circle" />
+              Sign Out
+            </NavItem>
+          </Nav>
         </MenuContainer>
       ) : (
         <SignIn

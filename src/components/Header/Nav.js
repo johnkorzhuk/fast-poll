@@ -2,31 +2,44 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import { primarySemiBold } from '../common/styled/typography';
+
 const Container = styled.nav`
   min-width: 150px;
-  border-radius: 10px;
+  max-height: ${({ isOpen }) => (isOpen ? '100px' : '20px')};
+  border-radius: 15px;
   box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.2);
   position: absolute;
   right: 0;
   top: 50px;
-  z-index: 10;
-  background-color: white;
+  z-index: ${({ isOpen }) => (isOpen ? 10 : -1)};
+  background-color: ${({ theme }) => theme.colors.white};
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  transform: ${({ isOpen }) =>
+    isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  transition: opacity 100ms linear, transform 100ms linear,
+    max-height 100ms linear, z-index 150ms linear;
 `;
 
 export const NavItem = styled.div`
-  padding: 10px 20px;
+  ${primarySemiBold('1.4rem')};
+  padding: 15px 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   user-select: none;
   width: 100%;
   cursor: pointer;
   position: relative;
   transition: background-color 200ms linear;
-  font-size: 14px;
   text-decoration: none !important;
   border-radius: 0;
+  display: flex;
+  align-items: center;
+  max-height: ${({ isOpen }) => (isOpen ? '50px' : '20px')};
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  transition: max-height 30ms linear, opacity 50ms linear;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${({ theme }) => theme.colors.lightGray};
   }
 
   &:first-child {
@@ -34,6 +47,7 @@ export const NavItem = styled.div`
     border-top-right-radius: 15px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
   }
 
   &:last-child {
@@ -47,7 +61,7 @@ export const NavItem = styled.div`
 
 const Nav = ({ isOpen, children }) => {
   return (
-    <Container aria-haspopup="true" aria-expanded={isOpen}>
+    <Container aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen}>
       {children}
     </Container>
   );
