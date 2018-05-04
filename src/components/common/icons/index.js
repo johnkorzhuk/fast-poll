@@ -12,21 +12,53 @@ const SVG = styled.svg`
     width ? `${width}px` : typeof size === 'number' ? `${size}px` : size};
   height: ${({ size, height }) =>
     height ? `${height}px` : typeof size === 'number' ? `${size}px` : size};
+
+  > g {
+    ${({ color, gradient }) => !gradient && `fill: ${color};`};
+  }
 `;
 
-const renderIcon = (icon, props) => {
+const Icon = ({ icon, color, size, gradient, ...props }) => {
   switch (icon) {
     case 'add-circle':
-      return <AddCircle {...props} />;
+      return (
+        <SVG {...props} size={size} viewBox="0 0 24 24" color={color}>
+          <AddCircle />
+        </SVG>
+      );
 
     case 'check-circle':
-      return <CheckCircle {...props} />;
+      return (
+        <SVG
+          {...props}
+          gradient={gradient.length === 2}
+          size={size}
+          viewBox="0 0 24 24"
+          color={color}>
+          <CheckCircle gradient={gradient} />
+        </SVG>
+      );
 
     case 'eye-circle':
-      return <EyeCircle {...props} />;
+      return (
+        <SVG {...props} size={size} viewBox="0 0 24 24" color={color}>
+          <EyeCircle />
+        </SVG>
+      );
 
     case 'drag':
-      return <Drag {...props} />;
+      return (
+        <SVG
+          {...props}
+          gradient={gradient.length === 2}
+          color={color}
+          size={size}
+          width={size}
+          height={9 / 16 * size}
+          viewBox="0 0 16 9">
+          <Drag gradient={gradient} />
+        </SVG>
+      );
 
     default:
       // eslint-disable-next-line no-console
@@ -34,41 +66,15 @@ const renderIcon = (icon, props) => {
   }
 };
 
-const Icon = ({ icon, color, size, aspectRatio, gradient, ...props }) => {
-  const [width, height] = aspectRatio;
-  const hasAR = aspectRatio.length === 2;
-
-  if (!hasAR) {
-    return (
-      <SVG {...props} size={size} viewBox="0 0 24 24">
-        {renderIcon(icon, { color, size, gradient })}
-      </SVG>
-    );
-  }
-
-  return (
-    <SVG
-      {...props}
-      size={size}
-      width={size}
-      height={height / width * size}
-      viewBox={`0 0 ${width} ${height}`}>
-      {renderIcon(icon, { color, size, gradient })}
-    </SVG>
-  );
-};
-
 Icon.defaultProps = {
   color: '#fff',
   size: 24,
-  aspectRatio: [],
   gradient: [],
 };
 
 Icon.propTypes = {
   icon: PropTypes.string.isRequired,
   color: PropTypes.string,
-  aspectRatio: PropTypes.arrayOf(PropTypes.number.isRequired),
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   gradient: PropTypes.arrayOf(PropTypes.string),
 };

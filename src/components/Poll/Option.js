@@ -71,12 +71,7 @@ const Option = ({
       {...props}>
       {!newest && (
         <DragHandle>
-          <Icon
-            icon="drag"
-            size={14}
-            aspectRatio={[16, 9]}
-            color={theme.colors.black}
-          />
+          <Icon icon="drag" size={14} color={theme.colors.black} />
         </DragHandle>
       )}
 

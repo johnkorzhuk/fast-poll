@@ -169,7 +169,7 @@ const Poll = ({
             type="secondary"
             icon="eye-circle"
             iconSize={18}>
-            See Results
+            Results
           </Button>
         )}
         {renderVoteButton && (

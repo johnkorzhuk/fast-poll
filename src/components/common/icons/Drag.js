@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-const Drag = ({ color }) => {
+const Drag = () => {
   return (
-    <g id="icon-drag" fill={color}>
+    <g id="icon-drag">
       <ellipse cx="1.333" cy="1.286" rx="1.333" ry="1.286" />
       <ellipse
         cx="1.333"
@@ -44,8 +44,6 @@ const Drag = ({ color }) => {
   );
 };
 
-Drag.propTypes = {
-  color: PropTypes.string.isRequired,
-};
+Drag.propTypes = {};
 
 export default Drag;
