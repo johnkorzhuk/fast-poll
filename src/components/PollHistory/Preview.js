@@ -37,7 +37,7 @@ const Container = styled(Link)`
     width: calc(33% - 25px);
     margin-right: 40px;
 
-    &:nth-child(3n + 0) {
+    &:nth-child(3n) {
       margin-right: 0;
     }
   }

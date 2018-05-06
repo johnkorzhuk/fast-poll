@@ -86,7 +86,7 @@ const Header = ({
         </Link>
       </LogoContainer>
       <NavContainer>
-        <StyledLink to="/new">New</StyledLink>
+        <StyledLink to="/">New</StyledLink>
         {isAuthed ? (
           <MenuContainer
             onMouseEnter={() => !overlayIsOpen && toggleOverlay(!overlayIsOpen)}
