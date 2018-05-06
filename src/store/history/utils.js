@@ -1,4 +1,4 @@
-export const sortPollsByProperty = (polls, prop, order = 'asc') => {
+export const sortPollsByProperty = (polls, prop, order = 'desc') => {
   if (order === 'desc') {
     return polls.sort((a, b) => {
       if (prop === 'date') {

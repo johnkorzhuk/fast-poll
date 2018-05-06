@@ -1,10 +1,20 @@
-export const LOADING = 'history/LOADING';
+export const TOGGLE_LOADING = 'history/TOGGLE_LOADING';
+export const TOGGLE_EMPTY = 'history/TOGGLE_EMPTY';
 export const ADD_POLLS = 'history/ADD_POLLS';
 
-export const loadingAction = isLoading => ({
-  type: LOADING,
+export const toggleLoadingAction = (type, isLoading) => ({
+  type: TOGGLE_LOADING,
   payload: {
+    type,
     isLoading,
+  },
+});
+
+export const toggleEmptyAction = (type, isEmpty) => ({
+  type: TOGGLE_EMPTY,
+  payload: {
+    type,
+    isEmpty,
   },
 });
 
@@ -16,47 +26,63 @@ export const addPollsAction = (type, polls) => ({
   },
 });
 
-export const getPollHistory = (firebase, { uid }) => dispatch => {
-  const LIMIT = 36;
+export const getPollHistory = (firebase, { uid, type }) => (
+  dispatch,
+  getState,
+) => {
+  const LIMIT = 12;
   const userRef = firebase.users.doc(uid);
+  const { created, votedOn } = getState().history;
+  const createdPromise = userRef
+    .collection('createdPolls')
+    .where('date', '<', created.lastItemDate)
+    .orderBy('date', 'desc')
+    .limit(LIMIT);
+  const votedOnPromise = userRef
+    .collection('votedOnPolls')
+    .where('date', '<', votedOn.lastItemDate)
+    .orderBy('date', 'desc')
+    .limit(LIMIT);
+  const dispatchPollData = (pollDoc, type) => {
+    const polls = [];
 
-  dispatch(loadingAction(true));
-
-  return Promise.all([
-    userRef
-      .collection('createdPolls')
-      .orderBy('date')
-      .limit(LIMIT)
-      .get(),
-    userRef
-      .collection('votedOnPolls')
-      .orderBy('date')
-      .limit(LIMIT)
-      .get(),
-  ])
-    .then(([created, votedOn]) => {
-      const createdPolls = [];
-      const votedOnPolls = [];
-
-      created.forEach(doc => {
-        createdPolls.push(doc.data());
-      });
-      votedOn.forEach(doc => {
-        votedOnPolls.push(doc.data());
-      });
-
-      dispatch(loadingAction(false));
-      dispatch(addPollsAction('created', createdPolls));
-      dispatch(addPollsAction('votedOn', votedOnPolls));
-
-      return [
-        created.docs[created.docs.length - 1],
-        votedOn.docs[votedOn.docs.length - 1],
-      ];
-    })
-    .catch(error => {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      // TODO: notify the user of the error
+    pollDoc.forEach(doc => {
+      polls.push(doc.data());
     });
+
+    dispatch(addPollsAction(type, polls));
+    dispatch(toggleEmptyAction(type, pollDoc.empty));
+  };
+
+  if (!type) {
+    dispatch(toggleLoadingAction('created', true));
+    dispatch(toggleLoadingAction('votedOn', true));
+    // console.log(toggleLoadingAction('created', true));
+    // console.log(toggleLoadingAction('votedOn', true));
+    Promise.all([createdPromise.get(), votedOnPromise.get()])
+      .then(([created, votedOn]) => {
+        dispatchPollData(created, 'created');
+        dispatchPollData(votedOn, 'votedOn');
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        // TODO: notify the user of the error
+      });
+  } else if (type === 'created') {
+    dispatch(toggleLoadingAction('created', true));
+
+    createdPromise.get().then(createdDoc => {
+      dispatchPollData(createdDoc, 'created');
+    });
+  } else {
+    dispatch(toggleLoadingAction('votedOn', true));
+
+    votedOnPromise.get().then(votedOnDoc => {
+      dispatchPollData(votedOnDoc, 'votedOn');
+    });
+  }
+
+  dispatch(toggleLoadingAction('created', false));
+  dispatch(toggleLoadingAction('votedOn', false));
 };

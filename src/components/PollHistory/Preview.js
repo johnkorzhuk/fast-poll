@@ -1,21 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-// import { Link } from 'react-router-dom';
 import Link from 'gatsby-link';
 
+import { primaryBold } from '../common/styled/typography';
+
 const Container = styled(Link)`
+  ${primaryBold('1.8rem')};
   height: 80px;
   width: 100%;
+  padding: 20px;
   background-image: ${({ theme }) => theme.gradients.secondary};
   filter: grayscale(1);
   transition: filter 200ms linear;
-  margin-bottom: 40px;
+  margin-top: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 22px;
   color: white;
   text-decoration: none;
   border-radius: 10px;
@@ -42,7 +44,11 @@ const Container = styled(Link)`
 `;
 
 const PollPreview = ({ title, id }) => {
-  return <Container to={`/poll/${id}`}>{title}</Container>;
+  return (
+    <Container to={`/poll/${id}`}>
+      {title.length > 20 ? `${title.substr(0, 20)}...` : title}
+    </Container>
+  );
 };
 
 PollPreview.propTypes = {

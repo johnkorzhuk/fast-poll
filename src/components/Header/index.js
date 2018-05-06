@@ -1,15 +1,16 @@
 import React from 'react';
-import GatsbyLink from 'gatsby-link';
+import Link from 'gatsby-link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import headerBackgroundPNG from '../../assets/images/header.png';
 
 import { Container as BaseContainerStyles } from '../common/styled/layout';
+import { Link as LinkTheme } from '../common/styled/theme';
 import SignIn from '../SignIn/index';
 import { Google as GoogleIcon, FastPoll } from '../common/logos/index';
 import Avatar from './Avatar';
-import Nav, { NavItem } from './Nav';
+import Nav, { NavItem } from './NavMenu';
 import Icon from '../common/icons/index';
 
 const HeaderContainer = styled.header`
@@ -38,24 +39,34 @@ const StyledGoogleIcon = styled(GoogleIcon)`
   margin-right: 5px;
 `;
 
+const NavContainer = styled.nav`
+  display: flex;
+  align-items: center;
+`;
+
 const MenuContainer = styled.div`
   position: relative;
+  right: 0;
   padding-bottom: 13px;
   padding-left: 20px;
   margin-bottom: -13px;
   margin-left: -20px;
 `;
 
-const Link = styled(GatsbyLink)`
+const LogoContainer = styled.div`
+  height: 50%;
+  overflow: hidden;
   width: 60vw;
-  max-width: 350px;
+  max-width: 300px;
 `;
 
 const NavIcon = styled(Icon)`
   margin-right: 10px;
 `;
 
-const BACKGROUND = 'background-color: #20232a';
+const StyledLink = LinkTheme.extend`
+  margin-right: 40px;
+`;
 
 const Header = ({
   background,
@@ -69,45 +80,46 @@ const Header = ({
 }) => (
   <HeaderContainer background={background}>
     <Container>
-      <Link to="/">
-        <FastPoll />
-      </Link>
-      {isAuthed ? (
-        <MenuContainer
-          onMouseEnter={() => !overlayIsOpen && toggleOverlay(!overlayIsOpen)}
-          onMouseLeave={() => overlayIsOpen && toggleOverlay(!overlayIsOpen)}>
-          <Avatar
-            photoURL={photoURL}
-            onClick={() => toggleOverlay(!overlayIsOpen)}
-          />
-          <Nav isOpen={overlayIsOpen}>
-            <NavItem
-              onClick={() => onNavItemClick('/polls')}
-              isOpen={overlayIsOpen}>
-              <NavIcon size={18} gradient="secondary" icon="poll" />
-              My Polls
-            </NavItem>
+      <LogoContainer>
+        <Link to="/">
+          <FastPoll />
+        </Link>
+      </LogoContainer>
+      <NavContainer>
+        <StyledLink to="/new">New</StyledLink>
+        {isAuthed ? (
+          <MenuContainer
+            onMouseEnter={() => !overlayIsOpen && toggleOverlay(!overlayIsOpen)}
+            onMouseLeave={() => overlayIsOpen && toggleOverlay(!overlayIsOpen)}>
+            <Avatar
+              photoURL={photoURL}
+              onClick={() => toggleOverlay(!overlayIsOpen)}
+            />
+            <Nav isOpen={overlayIsOpen}>
+              <NavItem
+                onClick={() => onNavItemClick('/polls')}
+                isOpen={overlayIsOpen}>
+                <NavIcon size={18} gradient="secondary" icon="poll" />
+                My Polls
+              </NavItem>
 
-            <NavItem onClick={signOut} isOpen={overlayIsOpen}>
-              <NavIcon size={18} gradient="primary" icon="power-circle" />
-              Sign Out
-            </NavItem>
-          </Nav>
-        </MenuContainer>
-      ) : (
-        <SignIn
-          onClick={() => signIn('google')}
-          icon={<StyledGoogleIcon />}
-          text="Sign In"
-        />
-      )}
+              <NavItem onClick={signOut} isOpen={overlayIsOpen}>
+                <NavIcon size={18} gradient="primary" icon="power-circle" />
+                Sign Out
+              </NavItem>
+            </Nav>
+          </MenuContainer>
+        ) : (
+          <SignIn
+            onClick={() => signIn('google')}
+            icon={<StyledGoogleIcon />}
+            text="Sign In"
+          />
+        )}{' '}
+      </NavContainer>
     </Container>
   </HeaderContainer>
 );
-
-Header.defaultProps = {
-  background: BACKGROUND,
-};
 
 Header.propTypes = {
   background: PropTypes.string,

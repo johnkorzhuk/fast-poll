@@ -6,7 +6,7 @@ const Container = styled.div`
   height: 0;
   width: 100%;
   padding: 0;
-  padding-bottom: 100%;
+  padding-bottom: 50%;
 `;
 
 const Svg = styled.svg`

@@ -1,58 +1,84 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ReactIScroll from 'react-iscroll';
-import iScroll from 'iscroll';
+import Infinate from 'react-infinite-scroll-component';
 
-import { Heading2 } from '../common/styled/typography';
+import {
+  Heading1 as BaseHeading1,
+  Heading2,
+} from '../common/styled/typography';
 import PollPreview from './Preview';
+
+const CONTAINER_PADDING = 50;
 
 const Container = styled.div`
   margin-top: 50px;
-  position: relative;
-  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+  border-radius: 30px;
+`;
+
+const Heading = BaseHeading1.extend`
   width: 100%;
-  height: 500px;
+  padding: 30px ${CONTAINER_PADDING}px 20px;
+  text-align: center;
+  ${({ hasItems, theme }) =>
+    hasItems && `border-bottom: 1px solid ${theme.colors.gray};`};
+  margin-bottom: 0;
+  text-transform: capitalize;
 `;
 
-const PollContainer = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-  width: 95%;
+const ScrollMessage = Heading2.extend`
+  display: block;
+  width: 100%;
+  margin: 25px 0 0;
+`.withComponent('div');
 
-  @media (min-width: 800px) {
-    width: 98%;
-  }
-`;
+const PollHistory = ({
+  heading,
+  polls,
+  type,
+  getPollHistory,
+  hasMore,
+  uid,
+}) => {
+  const hasItems = polls.length > 0;
+  let containerHeight = 350;
 
-const I_SCROLL_OPTIONS = {
-  scrollY: true,
-  disablePointer: true,
-  disableTouch: false,
-  disableMouse: true,
-  mouseWheel: true,
-  scrollbars: true,
-  interactiveScrollbars: true,
-};
-
-const PollHistory = ({ heading, polls }) => {
+  if (polls.length < 4) containerHeight = 125;
+  else if (polls.length < 7) containerHeight = 250;
   return (
     <Container>
-      <Heading2>{heading}</Heading2>
-      <ReactIScroll iScroll={iScroll} options={I_SCROLL_OPTIONS}>
-        <PollContainer>
+      <Heading hasItems={hasItems}>{heading}</Heading>
+      {hasItems && (
+        <Infinate
+          dataLength={hasMore ? polls.length + 1 : polls.length}
+          height={containerHeight}
+          next={() => {
+            getPollHistory(uid, type);
+          }}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            padding: '0 14px 0 24px',
+            marginBottom: 25,
+          }}
+          loader={<ScrollMessage>Loading...</ScrollMessage>}
+          hasMore={hasMore}>
           {polls.map(poll => {
             return <PollPreview key={poll.id} {...poll} />;
           })}
-        </PollContainer>
-      </ReactIScroll>
+        </Infinate>
+      )}
     </Container>
   );
 };
 
 PollHistory.propTypes = {
+  uid: PropTypes.string.isRequired,
   heading: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  hasMore: PropTypes.bool.isRequired,
+  getPollHistory: PropTypes.func.isRequired,
   polls: PropTypes.arrayOf(
     PropTypes.shape({
       date: PropTypes.instanceOf(Date).isRequired,

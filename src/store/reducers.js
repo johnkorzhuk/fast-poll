@@ -8,10 +8,10 @@ import ui from './ui/reducer';
 const appReducer = combineReducers({ poll, auth, history, ui });
 
 export default (state, action) => {
-  // if (action.type === 'auth/LOGOUT') {
-  //   // eslint-disable-next-line no-param-reassign
-  //   state = undefined;
-  // }
+  if (action.type === 'auth/SIGN_OUT') {
+    // eslint-disable-next-line no-param-reassign
+    state = undefined;
+  }
 
   return appReducer(state, action);
 };

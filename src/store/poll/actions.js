@@ -1,4 +1,5 @@
 import { updateOptionAction, updateOptionOrderAction } from './options/actions';
+import { addPollsAction } from '../history/actions';
 
 export const LOADING = 'poll/LOADING';
 export const UPDATE_TITLE = 'poll/UPDATE_TITLE';
@@ -94,6 +95,17 @@ export const createPoll = (firebase, history, data) => dispatch => {
         id: pollId,
         date: new Date(Date.now()),
         title,
+      })
+      .then(() => {
+        dispatch(
+          addPollsAction('created', [
+            {
+              date: new Date(Date.now() - 100000),
+              id: pollId,
+              title,
+            },
+          ]),
+        );
       })
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -245,6 +257,17 @@ export const voteOnPoll = (
         id: pollId,
         date: new Date(Date.now()),
         title,
+      })
+      .then(() => {
+        dispatch(
+          addPollsAction('votedOn', [
+            {
+              date: new Date(Date.now() - 100000),
+              id: pollId,
+              title,
+            },
+          ]),
+        );
       })
       .catch(error => {
         // eslint-disable-next-line no-console

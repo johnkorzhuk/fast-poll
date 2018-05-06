@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
+import GatsbyLink from 'gatsby-link';
 
-import { primary, primaryBold } from './typography';
+import { primary, primaryBold, link } from './typography';
 
 const HORIZONTAL_BUTTON_PADDING = 25;
 
@@ -72,4 +73,9 @@ export const Label = styled.label`
   color: ${({ theme }) => theme.colors.black};
   font-size: 1.6rem;
   margin-bottom: 12px;
+`;
+
+export const Link = styled(GatsbyLink)`
+  ${link};
+  color: ${({ theme }) => theme.colors.black};
 `;

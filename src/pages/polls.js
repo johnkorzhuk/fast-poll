@@ -12,17 +12,13 @@ import {
 import { getPollHistory } from '../store/history/actions';
 
 import withAuth from '../containers/withAuth';
-import { Heading1, Paragraph } from '../components/common/styled/typography';
+import { Paragraph } from '../components/common/styled/typography';
 import PollHistory from '../components/PollHistory/index';
 import SignIn from '../components/SignIn/index';
 import { Google as GoogleIcon } from '../components/common/logos/index';
 
 const Container = styled.main`
-  height: 100%;
-
-  > h1 {
-    text-align: center;
-  }
+  margin-bottom: 100px;
 `;
 
 const StyledGoogleIcon = styled(GoogleIcon)`
@@ -61,6 +57,10 @@ class MyPolls extends Component {
     history: PropTypes.object.isRequired,
     created: pollType,
     votedOn: pollType,
+    createdLoading: PropTypes.bool.isRequired,
+    createdHasMore: PropTypes.bool.isRequired,
+    votedOnLoading: PropTypes.bool.isRequired,
+    votedOnHasMore: PropTypes.bool.isRequired,
     uid: PropTypes.string.isRequired,
     isAuthed: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -69,10 +69,12 @@ class MyPolls extends Component {
   };
 
   componentDidMount() {
-    const { isAuthed, uid } = this.props;
+    const { isAuthed, uid, created, votedOn } = this.props;
 
     if (uid && isAuthed) {
-      this.getPollHistory(uid);
+      if (created.length === 0 || votedOn.length === 0) {
+        this.handleGetPollHistory(uid);
+      }
     }
   }
 
@@ -81,29 +83,55 @@ class MyPolls extends Component {
     const { uid: nextUid, isAuthed: nextIsAuthed } = nextProps;
 
     if (isAuthed !== nextIsAuthed && nextIsAuthed) {
-      this.getPollHistory(nextUid);
+      this.handleGetPollHistory(nextUid);
     }
   }
 
-  getPollHistory(uid) {
+  handleGetPollHistory = (uid, type) => {
     const { firebase } = this.context;
     const { getPollHistory } = this.props;
 
-    getPollHistory(firebase, { uid }).then(([lastCreatedRef, lastVotedRef]) => {
-      this.lastCreatedRef = lastCreatedRef;
-      this.lastVotedRef = lastVotedRef;
-    });
-  }
+    getPollHistory(firebase, { uid, type });
+  };
 
   render() {
-    const { created, votedOn, isAuthed, signIn, loading } = this.props;
+    const {
+      created,
+      votedOn,
+      isAuthed,
+      signIn,
+      loading,
+      getPollHistory,
+      createdLoading,
+      votedOnLoading,
+      createdHasMore,
+      votedOnHasMore,
+      ...props
+    } = this.props;
     return (
       <Container>
-        <Heading1>Poll History</Heading1>
         {isAuthed
           ? [
-              <PollHistory polls={created} heading="Created" key="created" />,
-              <PollHistory polls={votedOn} heading="Voted on" key="voted" />,
+              <PollHistory
+                polls={created}
+                heading="created"
+                key="created"
+                type="created"
+                loading={createdLoading}
+                getPollHistory={this.handleGetPollHistory}
+                hasMore={createdHasMore}
+                {...props}
+              />,
+              <PollHistory
+                polls={votedOn}
+                heading="voted on"
+                key="voted"
+                type="votedOn"
+                loading={votedOnLoading}
+                getPollHistory={this.handleGetPollHistory}
+                hasMore={votedOnHasMore}
+                {...props}
+              />,
             ]
           : !loading && (
               <div>
@@ -127,6 +155,10 @@ const enhance = compose(
       return {
         created: selectSortedPolls(selectCreatedPolls)(state),
         votedOn: selectSortedPolls(selectVotedOnPolls)(state),
+        createdLoading: state.history.created.loading,
+        votedOnLoading: state.history.votedOn.loading,
+        createdHasMore: !state.history.created.empty,
+        votedOnHasMore: !state.history.votedOn.empty,
       };
     },
     { getPollHistory },

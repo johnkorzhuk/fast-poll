@@ -22,6 +22,12 @@ export const primaryBold = fontSize => css`
   font-weight: 700;
 `;
 
+export const link = css`
+  ${primaryBold()};
+  font-size: 1.6rem;
+  text-decoration: none;
+`;
+
 export const Heading1 = styled.h1`
   ${heading()};
   margin-bottom: 24px;

@@ -15,10 +15,9 @@ const Container = styled.nav`
   z-index: ${({ isOpen }) => (isOpen ? 10 : -1)};
   background-color: ${({ theme }) => theme.colors.white};
   opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
-  transform: ${({ isOpen }) =>
-    isOpen ? 'translateY(0)' : 'translateY(-10px)'};
-  transition: opacity 100ms linear, transform 100ms linear,
-    max-height 100ms linear, z-index 150ms linear;
+
+  transition: opacity 100ms linear, max-height 100ms linear,
+    z-index 150ms linear;
 `;
 
 export const NavItem = styled.div`
@@ -59,7 +58,7 @@ export const NavItem = styled.div`
   }
 `;
 
-const Nav = ({ isOpen, children }) => {
+const NavMenu = ({ isOpen, children }) => {
   return (
     <Container aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen}>
       {children}
@@ -67,9 +66,9 @@ const Nav = ({ isOpen, children }) => {
   );
 };
 
-Nav.propTypes = {
+NavMenu.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   children: PropTypes.arrayOf(PropTypes.element.isRequired),
 };
 
-export default Nav;
+export default NavMenu;
