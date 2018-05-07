@@ -2,6 +2,8 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 
 const config = {
+  // https://firebase.google.com/docs/web/setup
+  // these keys will only work on your localhost, to test a
   apiKey: 'AIzaSyDF5UrJSvY2m0kJS_shx28VoVaQ6b1giTg',
   authDomain: 'polling-app-848fd.firebaseapp.com',
   databaseURL: 'https://polling-app-848fd.firebaseio.com',
@@ -15,6 +17,15 @@ class Firebase {
     firebase.initializeApp(config);
     this.store = firebase.firestore;
     this.auth = firebase.auth;
+
+    if (config.apiKey === 'AIzaSyDF5UrJSvY2m0kJS_shx28VoVaQ6b1giTg') {
+      // if you've updated the config to use your own keys you may delete this conditional.
+      console.warn(
+        `${
+          config.authDomain
+        } will only work on localhost. To get your own firebase keys visit: https://firebase.google.com/docs/web/setup and replace the config object in ./src/services/firebase.js with your own keys.`,
+      );
+    }
 
     if (offline) {
       firebase

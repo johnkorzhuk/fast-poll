@@ -56,7 +56,7 @@ const MenuContainer = styled.div`
 const LogoContainer = styled.div`
   height: 50%;
   overflow: hidden;
-  width: 45vw;
+  width: 42vw;
   max-width: 300px;
 `;
 
@@ -65,7 +65,7 @@ const NavIcon = styled(Icon)`
 `;
 
 const StyledLink = LinkTheme.extend`
-  margin-right: ${({ isAuthed }) => (isAuthed ? '40px' : '20px')};
+  margin-right: 25px;
 
   @media (min-width: 500px) {
     margin-right: 40px;
@@ -90,9 +90,7 @@ const Header = ({
         </Link>
       </LogoContainer>
       <NavContainer>
-        <StyledLink to="/" isAuthed={isAuthed}>
-          New
-        </StyledLink>
+        <StyledLink to="/">New</StyledLink>
         {isAuthed ? (
           <MenuContainer
             onMouseEnter={() => !overlayIsOpen && toggleOverlay(!overlayIsOpen)}
