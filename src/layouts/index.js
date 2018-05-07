@@ -34,7 +34,7 @@ class TemplateWrapper extends Component {
           meta={[
             {
               name: 'description',
-              content: 'Create polls fast & easy',
+              content: 'Create fast and easy polls',
             },
             { name: 'keywords', content: 'polling, rating' },
             { name: 'msapplication-TileColor', content: '#08AEEA' },
