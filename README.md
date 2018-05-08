@@ -1,6 +1,6 @@
 # Fast Poll PWA
 
-A fun little side project for creating polls on the fly. The goal was to make a PWA utilizing the JAMStack architectural pattern. You can find the blogposts I wrote on creating the basics of this application as well as more info on JAMStack here: [part 1](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-1-78a03a633092), [part 2](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-2-9044534ea6bc), and part 3 (coming soon).
+A fun little side project for creating polls on the fly. The goal was to make a PWA utilizing the JAMStack architectural pattern. You can find the blogposts I wrote on creating the basics of this application as well as more info on JAMStack here: [part 1](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-1-78a03a633092), [part 2](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-2-9044534ea6bc), and [part 3](https://medium.com/@UnicornAgency/jamstack-pwa-lets-build-a-polling-app-with-gatsby-js-firebase-and-styled-components-pt-3-89fa499534fd).
 
 A lighthouse report for [www.fastpoll.co](https://www.fastpoll.co) can be found [here](https://googlechrome.github.io/lighthouse/viewer/?gist=6a8f62e43cb4aa349aa2033984c7aaa7). Keep in mind your results may vary. Try running the test multiple times if you get differing results.
 
