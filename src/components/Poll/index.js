@@ -30,7 +30,7 @@ const OptionsContainer = styled.div`
   padding: 0 ${CONTAINER_PADDING}px;
 `;
 
-const Heading1 = BaseHeading1.extend`
+const Heading1 = styled(BaseHeading1)`
   width: 100%;
   padding: 30px ${CONTAINER_PADDING}px 20px;
   text-align: center;
@@ -38,7 +38,7 @@ const Heading1 = BaseHeading1.extend`
   margin-bottom: ${CONTAINER_PADDING}px;
 `;
 
-const SelectionButton = BaseSelection.extend`
+const SelectionButton = styled(BaseSelection)`
   cursor: pointer;
   text-align: left;
   border-color: ${({ active, theme }) =>
@@ -72,7 +72,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const IconContainer = BaseIconContainer.extend`
+const IconContainer = styled(BaseIconContainer)`
   right: 10px;
 `;
 
@@ -124,7 +124,7 @@ const Poll = ({
             const { id } = option;
             const selected = id === selection;
             let perc = totalVotes
-              ? (option.votes / totalVotes * 100).toFixed(2)
+              ? ((option.votes / totalVotes) * 100).toFixed(2)
               : 0;
 
             if (perc.toString().split('.')[1] === '00') {
@@ -139,10 +139,9 @@ const Poll = ({
                 showResults={showResults}
                 onClick={() => !showResults && onSelectOption(id)}>
                 {option.text}
-                {showResults &&
-                  !Number.isNaN(perc) && (
-                    <OptionResult selected={selected}>{perc}%</OptionResult>
-                  )}
+                {showResults && !Number.isNaN(perc) && (
+                  <OptionResult selected={selected}>{perc}%</OptionResult>
+                )}
                 {selected && (
                   <IconContainer size={16}>
                     <Icon icon="check-circle" size={16} gradient="positive" />

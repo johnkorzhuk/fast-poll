@@ -1,25 +1,25 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
-import { Provider } from 'react-redux';
-import { renderToString } from 'react-dom/server';
-import { ServerStyleSheet, ThemeProvider } from 'styled-components'
+import ReactDOMServer from 'react-dom/server';
+import { ServerStyleSheet, ThemeProvider } from 'styled-components';
 
-import theme from './src/constants/theme'
-import createStore from './src/store/index';
+import wrapWithProvider from './wrap-with-provider';
 
-exports.replaceRenderer = ({ bodyComponent, replaceBodyHTMLString, setHeadComponents }) => {
-  const store = createStore();
+export const wrapRootElement = wrapWithProvider;
 
-  const ConnectedBody = () => (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>{bodyComponent}</Provider>
-    </ThemeProvider>
+exports.replaceRenderer = ({
+  bodyComponent,
+  replaceBodyHTMLString,
+  setHeadComponents,
+}) => {
+  const ConnectedBody = () => ({ bodyComponent });
+
+  const sheet = new ServerStyleSheet();
+  const bodyHTML = ReactDOMServer.renderToString(
+    sheet.collectStyles(<ConnectedBody />),
   );
+  const styleElement = sheet.getStyleElement();
 
-  const sheet = new ServerStyleSheet()
-  const bodyHTML = renderToString(sheet.collectStyles(<ConnectedBody />))
-  const styleElement = sheet.getStyleElement()
-
-  replaceBodyHTMLString(bodyHTML)
-  setHeadComponents([styleElement])
+  replaceBodyHTMLString(bodyHTML);
+  setHeadComponents([styleElement]);
 };

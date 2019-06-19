@@ -1,5 +1,6 @@
 import { updateOptionAction, updateOptionOrderAction } from './options/actions';
 import { addPollsAction } from '../history/actions';
+import { navigate } from 'gatsby-link';
 
 export const LOADING = 'poll/LOADING';
 export const UPDATE_TITLE = 'poll/UPDATE_TITLE';
@@ -76,14 +77,14 @@ export const resetPoll = () => dispatch => {
   dispatch(resetPollAction());
 };
 
-export const createPoll = (firebase, history, data) => dispatch => {
+export const createPoll = (firebase, data) => dispatch => {
   const { pollId, options, title, isAuthed, uid } = data;
 
   dispatch(loadingAction(true));
   dispatch(setCreatedPollAction(pollId));
   dispatch(setOwnerAction(uid));
 
-  history.push(`/poll/${pollId}`);
+  navigate(`/poll/${pollId}`);
 
   // only signed in users, not anonymous users
   if (isAuthed) {

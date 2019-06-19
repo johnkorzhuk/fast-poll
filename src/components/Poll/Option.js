@@ -15,7 +15,7 @@ const OptionInputItem = styled.input`
   padding: 0;
 `;
 
-const IconContainer = BaseIconContainer.extend`
+const IconContainer = styled(BaseIconContainer)`
   right: 10px;
   cursor: pointer;
 `;
