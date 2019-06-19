@@ -47,7 +47,7 @@ const Gradient = styled.div`
   height: 100%;
 `;
 
-const IconContainer = BaseIconContainer.extend`
+const IconContainer = styled(BaseIconContainer)`
   right: 10px;
 `;
 

@@ -17,7 +17,7 @@ const Container = styled.div`
   border-radius: 30px;
 `;
 
-const Heading = BaseHeading1.extend`
+const Heading = styled(BaseHeading1)`
   width: 100%;
   padding: 30px ${CONTAINER_PADDING}px 20px;
   text-align: center;
@@ -27,7 +27,7 @@ const Heading = BaseHeading1.extend`
   text-transform: capitalize;
 `;
 
-const ScrollMessage = Heading2.extend`
+const ScrollMessage = styled(Heading2)`
   display: block;
   width: 100%;
   margin: 25px 0 0;

@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import { arrayMove } from 'react-sortable-hoc';
-import shortId from 'short-id';
+import shortid from 'shortid';
 
 import { updateTitle, createPoll, resetPoll } from '../store/poll/actions';
 import {
@@ -43,7 +43,7 @@ const TitleContainer = styled.div`
   }
 `;
 
-const TitleInput = Input.extend`
+const TitleInput = styled(Input)`
   ${primarySemiBold('1.8rem')};
   line-height: 1.6rem;
 `;
@@ -58,7 +58,6 @@ class NewPollPage extends Component {
   };
 
   static propTypes = {
-    history: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     options: PropTypes.arrayOf(
       PropTypes.shape({
@@ -90,7 +89,7 @@ class NewPollPage extends Component {
 
   componentWillMount() {
     const { resetPoll, resetOptions, updateNewest } = this.props;
-    const id = shortId.generate();
+    const id = shortid.generate();
 
     resetPoll();
     resetOptions();
@@ -172,7 +171,7 @@ class NewPollPage extends Component {
     const { addOption, newest } = this.props;
 
     if (newest.text) {
-      addOption(shortId.generate(), newest).then(() => {
+      addOption(shortid.generate(), newest).then(() => {
         this.newOptionInput.focus();
       });
     }
@@ -188,7 +187,7 @@ class NewPollPage extends Component {
 
   handleCreate = () => {
     const { signIn, uid } = this.props;
-    const pollId = shortId.generate();
+    const pollId = shortid.generate();
 
     if (!uid) {
       // due to our database rules, we can't write unless a uid exists
@@ -202,9 +201,9 @@ class NewPollPage extends Component {
 
   createPoll(pollId) {
     const { firebase } = this.context;
-    const { history, title, options, createPoll, isAuthed, uid } = this.props;
+    const { title, options, createPoll, isAuthed, uid } = this.props;
 
-    createPoll(firebase, history, { title, options, pollId, isAuthed, uid });
+    createPoll(firebase, { title, options, pollId, isAuthed, uid });
   }
 
   render() {

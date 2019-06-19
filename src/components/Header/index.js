@@ -28,7 +28,7 @@ const HeaderContainer = styled.header`
   }
 `;
 
-const Container = BaseContainerStyles.extend`
+const Container = styled(BaseContainerStyles)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,7 +64,7 @@ const NavIcon = styled(Icon)`
   margin-right: 10px;
 `;
 
-const StyledLink = LinkTheme.extend`
+const StyledLink = styled(LinkTheme)`
   margin-right: 25px;
 
   @media (min-width: 500px) {
